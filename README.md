@@ -13,8 +13,6 @@ As a user, I want a login form, so that I can access my account.
 
 As a user, I want a log out option, to log out with another account.
 
-As a user, I want, forgot the password feature, so that I can retrieve my password.
-
 As a user, I want a register form, so I can register to the app and use its functionalities.
 
 As a user, I want to have a map, so I can search for new places to discover.
@@ -47,3 +45,5 @@ As a user, I want a profile page, so other travellers can get to know me. (name,
 As a user, I want to be able to send and receive private messages, so I can communicate with other travellers. 
 
 As a user, I want the map to route me to the chosen destination, so that I know where to go. 
+
+As a user, I want, forgot the password feature, so that I can retrieve my password.
