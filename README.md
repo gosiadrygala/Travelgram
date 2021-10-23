@@ -17,9 +17,9 @@ As a user, I want a register form, so I can register to the app and use its func
 
 As a user, I want to have a map, so I can search for new places to discover.
 
-As a user, I want to be able to add a new place on the map, so I can share it with other people. (name, picture, coordinates, short description)
-
 As a user, I want the map to take my current location, so I can see the places around me.
+
+As a user, I want to be able to add a new place on the map, so I can share it with other people. (name, picture, coordinates, short description)
 
 As a user, I want a separated channel for the place, so that other people can discover it.
 
