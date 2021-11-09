@@ -11,7 +11,7 @@ App requirements
 
 As a user, I want a login form, so that I can access my account.
 
-As a user, I want a log out option, to log out with another account.
+As a user, I want a log out option, to log in with another account.
 
 As a user, I want a register form, so I can register to the app and use its functionalities.
 
