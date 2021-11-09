@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="sun">#DE9C74</color>
+    <color name="oneMountain">#423664</color>
+    <color name="anotherMountain">#2F284E</color>
+    <color name="lastMountain">#3F3E62</color>
 </resources>

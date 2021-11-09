@@ -6,10 +6,17 @@
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_travelgram.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/travelgram.xml" value="0.5" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/karl1/StudioProjects/Travelgram/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/karl1/StudioProjects/Travelgram/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/karl1/StudioProjects/Travelgram/app/src/main/res/drawable/travelgram.xml" value="0.264" />
+        <entry key="..\:/Users/karl1/StudioProjects/Travelgram/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/karl1/StudioProjects/Travelgram/app/src/main/res/layout/activity_sign_up.xml" value="0.259375" />
+        <entry key="..\:/Users/karl1/StudioProjects/Travelgram/app/src/main/res/layout/fragment_sign_in.xml" value="0.259375" />
+        <entry key="..\:/Users/karl1/StudioProjects/Travelgram/app/src/main/res/layout/fragment_sign_up.xml" value="0.2453125" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
