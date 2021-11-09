@@ -10,10 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Travelgram">
         <activity
-            android:name=".SignUpActivity"
+            android:name=".Views.SignUpActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Views.Feed"
+            android:exported="true" />
+        <activity
+            android:name=".Views.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
