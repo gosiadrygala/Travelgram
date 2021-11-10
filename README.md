@@ -32,7 +32,7 @@ As a user, I want to be able to add/ delete the post on the channel, so I can al
 
 As a user, I want to have an option to like the post, so I can support other users.
 
-As a user, I want to be able to comment on the post, so I can share my opinions.
+As a user, I want to be able to comment on the post, so I can share my opinions
 
 As a user, I want to have a news feed, so I can see the posts from channels and people I follow.
 
