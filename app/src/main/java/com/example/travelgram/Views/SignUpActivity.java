@@ -1,6 +1,11 @@
 package com.example.travelgram.Views;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -11,16 +16,40 @@ import android.widget.Toast;
 
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    private EditText username, email, password, shortDesc;
     private SignInSignUpVM signInSignUpVM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
         signInSignUpVM = new ViewModelProvider(this).get(SignInSignUpVM.class);
+
+        signInSignUpVM.getResponse().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(s.equals("Account created, please sign in.")) {
+                    username.setText("");
+                    email.setText("");
+                    password.setText("");
+                    shortDesc.setText("");
+                    extracted(s);
+                } else {
+                    extracted(s);
+                }
+                System.out.println(s);
+            }
+        }
+    );
     }
 
     public void BackToSignIn(View view) {
@@ -28,22 +57,21 @@ public class SignUpActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void Register(View view) {
-        EditText username = findViewById(R.id.signUpNameField);
-        EditText email = findViewById(R.id.signUpEmailField);
-        EditText password = findViewById(R.id.signUpPassword);
-        EditText shortDesc = findViewById(R.id.shortDescMultiFiled);
+    private void extracted(String response) {
+        Toast.makeText(this, response, Toast.LENGTH_LONG).show();
+    }
 
-        String signUpResponse = signInSignUpVM.signUp(username.getText().toString(),
+    public void Register(View view) {
+        username = findViewById(R.id.signUpNameField);
+        email = findViewById(R.id.signUpEmailField);
+        password = findViewById(R.id.signUpPassword);
+        shortDesc = findViewById(R.id.shortDescMultiFiled);
+
+        String s = signInSignUpVM.signUp(username.getText().toString(),
                 email.getText().toString(),
                 password.getText().toString(),
                 shortDesc.getText().toString());
 
-        if(signUpResponse.equals("true")) {
-            Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
-            intent.putExtra("registerResponse", "Account created, sign in.");
-            startActivity(intent);
-        }
-        else Toast.makeText(this, signUpResponse, Toast.LENGTH_LONG).show();
+        //TODO add picture in user registration
     }
 }
