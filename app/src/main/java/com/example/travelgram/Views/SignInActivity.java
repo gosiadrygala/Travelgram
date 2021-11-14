@@ -1,7 +1,6 @@
 package com.example.travelgram.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.travelgram.Models.User;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,7 +34,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
                 if(firebaseUser != null) {
-                    Intent intent = new Intent(SignInActivity.this, Feed.class);
+                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -51,7 +49,7 @@ public class SignInActivity extends AppCompatActivity {
     private void checkIfSignedIn() {
         signInSignUpVM.getCurrentUser().observe(this, user -> {
             if(user != null) {
-                startActivity(new Intent(this, Feed.class));
+                startActivity(new Intent(this, MainActivity.class));
             }
         });
     }

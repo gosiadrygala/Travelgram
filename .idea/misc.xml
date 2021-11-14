@@ -3,7 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_icons_marker_64.xml" value="0.2703125" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_logout.xml" value="0.2703125" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_message.xml" value="0.2703125" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_feed.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_sign_up.xml" value="0.2" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_feed.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_maps.xml" value="0.23854166666666668" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/menu/top_app_bar.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/bottom_border.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_map_24.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_homeicon.xml" value="0.3828125" />

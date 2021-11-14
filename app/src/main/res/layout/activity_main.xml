@@ -4,30 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.Feed"
+    tools:context=".Views.MainActivity"
     android:hardwareAccelerated="false">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/bottom_border"
+            android:theme="@style/ToolbarTheme"
+            app:menu="@menu/top_app_bar"
+            app:navigationIcon="@drawable/ic_logout"
+            app:navigationIconTint="?colorOnSecondary"
             app:title="@string/Travelgram"
             app:titleCentered="true"
-            app:titleTextColor="?colorOnSecondary"
-            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-            app:navigationIconTint="?colorOnSecondary"
-            app:menu="@menu/top_app_bar"
-            android:theme="@style/ToolbarTheme"
             app:titleTextAppearance="@style/ToolbarTitleText"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary" />
+            app:titleTextColor="?colorOnSecondary" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <fragment
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="1.0"
+        app:navGraph="@navigation/navigation"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
