@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_sign_up.xml" value="0.2" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/bottom_border.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_map_24.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_homeicon.xml" value="0.3828125" />
@@ -27,7 +28,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

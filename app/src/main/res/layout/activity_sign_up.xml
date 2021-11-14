@@ -74,15 +74,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:fontFamily="serif"
-        android:onClick="Register"
+        android:onClick="validateRegister"
+        android:padding="8dp"
         android:text="@string/sign_up"
         android:textAllCaps="false"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shortDescMultiFiled"
-        app:layout_constraintWidth_percent="0.65"
-        android:padding="8dp"/>
+        app:layout_constraintWidth_percent="0.65" />
 
     <TextView
         android:id="@+id/forgotPasswordText2"

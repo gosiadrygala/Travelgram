@@ -29,8 +29,9 @@ public class SignInActivity extends AppCompatActivity {
 
         signInSignUpVM = new ViewModelProvider(this).get(SignInSignUpVM.class);
 
-        signInSignUpVM.signOut();
+        //signInSignUpVM.signOut();
 
+        observerForSignInResponse();
         signInSignUpVM.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
@@ -41,8 +42,6 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //TODO toast for errors or u know
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null && bundle.containsKey("registerResponse"))
@@ -65,12 +64,20 @@ public class SignInActivity extends AppCompatActivity {
     public void SignInBtnClick(View view) {
         EditText email = findViewById(R.id.emailField);
         EditText password = findViewById(R.id.passwordField);
-        String signInResponse = signInSignUpVM.signIn(email.getText().toString(), password.getText().toString());
+        signInSignUpVM.signIn(email.getText().toString(), password.getText().toString());
+    }
 
-        if(signInResponse.equals("true")) {
-            Intent intent = new Intent(SignInActivity.this, Feed.class);
-            startActivity(intent);
-        }
-        else Toast.makeText(this, signInResponse, Toast.LENGTH_LONG).show();
+    private void observerForSignInResponse() {
+        signInSignUpVM.getSignInResponse().observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        makeToast(s);
+                    }
+                }
+        );
+    }
+
+    private void makeToast(String response) {
+        Toast.makeText(this, response, Toast.LENGTH_LONG).show();
     }
 }

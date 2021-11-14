@@ -25,8 +25,7 @@ public class Feed extends AppCompatActivity implements BottomNavigationView.OnNa
         bottomNavigationView.setSelectedItemId(R.id.page_1);
 
         signInSignUpVM = new ViewModelProvider(this).get(SignInSignUpVM.class);
-
-        //signInSignUpVM.signOut();
+        signInSignUpVM.signOut();
     }
 
     @Override

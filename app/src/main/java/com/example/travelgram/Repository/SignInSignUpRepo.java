@@ -1,11 +1,10 @@
 package com.example.travelgram.Repository;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import com.example.travelgram.DAO.SignInSignUpDAO;
 import com.example.travelgram.Models.User;
 import com.example.travelgram.Models.UserLiveData;
@@ -21,19 +20,21 @@ public class SignInSignUpRepo {
     private final Application app;
     private static SignInSignUpRepo instance;
     private final FirebaseAuth mAuth;
-    private MutableLiveData<String> response;
+    private final MutableLiveData<String> signUpResponse;
+    private final MutableLiveData<String> signInResponse;
     private final SignInSignUpDAO signInSignUpDAO;
 
     private SignInSignUpRepo(Application app) {
         this.app = app;
         currentUser = new UserLiveData();
         mAuth = FirebaseAuth.getInstance();
-        response = new MutableLiveData<>();
+        signUpResponse = new MutableLiveData<>();
         signInSignUpDAO = SignInSignUpDAO.getInstance();
+        signInResponse = new MutableLiveData<>();
     }
 
     public static synchronized SignInSignUpRepo getInstance(Application app) {
-        if(instance == null)
+        if (instance == null)
             instance = new SignInSignUpRepo(app);
         return instance;
     }
@@ -42,8 +43,8 @@ public class SignInSignUpRepo {
         return currentUser;
     }
 
-    public LiveData<String> getResponse() {
-        return response;
+    public LiveData<String> getSignUpResponse() {
+        return signUpResponse;
     }
 
     public void signOut() {
@@ -51,23 +52,50 @@ public class SignInSignUpRepo {
                 .signOut(app.getApplicationContext());
     }
 
+    /* Method used to check if the specified register username exists */
+    public void getUserByUsername(String username) {
+        signInSignUpDAO.getUserByUsername(username);
+    }
+
+    public MutableLiveData<String> getUsernameExists() {
+        return signInSignUpDAO.getUsernameExists();
+    }
+
+    /* Method used for registering the user in the firebase authentication service, as well as
+    adding the data about the user to database */
+    @SuppressLint("NewApi")
     public void signUp(User user) {
-        boolean userByUsername = signInSignUpDAO.getUserByUsername(user.getUsername());
-        if(!userByUsername) {
-            mAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).
-                    addOnCompleteListener(app.getMainExecutor(), new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                signOut();
-                                String uid = mAuth.getUid();
-                                signInSignUpDAO.createNewUser(uid, user);
-                                response.postValue("Account created, please sign in.");
-                            } else {
-                                response.postValue(task.getException().getMessage());
-                            }
+        mAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).
+                addOnCompleteListener(app.getMainExecutor(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            signOut();
+                            String uid = mAuth.getUid();
+                            signInSignUpDAO.createNewUser(uid, user);
+                            signUpResponse.postValue("Account created, please sign in.");
+                        } else {
+                            signUpResponse.postValue(task.getException().getMessage());
                         }
-                    });
-        } else response.postValue("User with this username already exists.");
+                    }
+                });
+    }
+
+    @SuppressLint("NewApi")
+    public void signIn(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(app.getMainExecutor(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                        } else {
+                            signInResponse.postValue(task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    public MutableLiveData<String> getSignInResponse() {
+        return signInResponse;
     }
 }
