@@ -3,22 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_icons_marker_64.xml" value="0.2703125" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_logout.xml" value="0.2703125" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_message.xml" value="0.2703125" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_feed.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_sign_up.xml" value="0.2" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_feed.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_maps.xml" value="0.23854166666666668" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Gosia/AndroidStudioProjects/Travelgram/app/src/main/res/menu/top_app_bar.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/all_borders.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/bottom_border.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.28703703703703703" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_map_24.xml" value="0.3828125" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.28703703703703703" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_homeicon.xml" value="0.3828125" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_icons_marker_64.xml" value="0.28703703703703703" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_log_out.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_logout.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_message.xml" value="0.3828125" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_microsoftteams_image__2_.xml" value="0.3828125" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_pngwing_com__1_.xml" value="0.20677083333333332" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_searchicon.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_travelgram.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/selected_color.xml" value="0.22135416666666666" />
@@ -30,6 +26,9 @@
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_sign_in.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/activity_sign_up.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/bottom_navigation_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_blank.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_maps.xml" value="0.33" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_pop_up_window.xml" value="0.5" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_sign_in.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/menu-v26/top_app_bar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.20520833333333333" />
@@ -37,10 +36,17 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.67" />
+      </ProjectState>
+    </option>
   </component>
 </project>
