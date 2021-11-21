@@ -17,7 +17,7 @@
         tools:ignore="HardcodedText" />
 
     <item
-        android:id="@+id/page_3"
+        android:id="@+id/map"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_map_24"
         android:title="Map"

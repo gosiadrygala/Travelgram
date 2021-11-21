@@ -12,6 +12,9 @@ public class Place {
     private String placeID;
     private List<Post> posts;
 
+    public Place() {
+    }
+
     public Place(String placeName, String description, String latitude, String longitude, String placeID, List<Post> posts) {
         this.placeName = placeName;
         this.description = description;

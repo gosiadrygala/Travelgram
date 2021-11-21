@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/feedFragment">
+    app:startDestination="@id/feed">
 
     <fragment
-        android:id="@+id/feedFragment"
+        android:id="@+id/feed"
         android:name="com.example.travelgram.Views.Fragments.FeedFragment"
         android:label="fragment_one"
         tools:layout="@layout/fragment_feed" />

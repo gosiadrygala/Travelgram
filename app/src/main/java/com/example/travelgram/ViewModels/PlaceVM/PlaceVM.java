@@ -50,7 +50,15 @@ public class PlaceVM extends AndroidViewModel {
         placeDAO.getMarkersInArea(bounds);
     }
 
-    public MutableLiveData<HashMap<String, LatLng>> getMarkerResponse() {
+    public MutableLiveData<HashMap<LatLng, String>> getMarkerResponse() {
         return placeDAO.getMarkerResponse();
+    }
+
+    public void getPlaceInfo(LatLng position) {
+        placeDAO.getPlaceInfo(position);
+    }
+
+    public MutableLiveData<Place> getPlaceInfoResponse() {
+        return placeDAO.getPlaceInfoResponse();
     }
 }

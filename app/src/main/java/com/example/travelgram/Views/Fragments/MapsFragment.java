@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.InputStream;
@@ -70,6 +71,7 @@ public class MapsFragment extends Fragment {
     private Button createPlaceButton;
     private Uri image;
     private static final int PICK_FROM_GALLERY = 1;
+    private Marker markerToUpdate;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         /**
@@ -103,7 +105,6 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             this.googleMap = googleMap;
-
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 private float currentZoom = -1; //keep track of your current zoom level
 
@@ -118,20 +119,19 @@ public class MapsFragment extends Fragment {
                 }
             });
 
-            placeVM.getMarkerResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<String, LatLng>>() {
+            placeVM.getMarkerResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<LatLng, String>>() {
                 @Override
-                public void onChanged(HashMap<String, LatLng> stringLatLngHashMap) {
-                    for (Map.Entry<String, LatLng> entry : stringLatLngHashMap.entrySet()) {
-                        String key = entry.getKey();
-                        LatLng latLng = entry.getValue();
-                        googleMap.addMarker(new MarkerOptions().position(latLng).title(key).icon(BitmapDescriptorFactory.fromResource(R.drawable.sadasd)));
+                public void onChanged(HashMap<LatLng, String> stringLatLngHashMap) {
+                    for (Map.Entry<LatLng, String> entry : stringLatLngHashMap.entrySet()) {
+                        String key = entry.getValue();
+                        LatLng latLng = entry.getKey();
+                        googleMap.addMarker(new MarkerOptions().position(latLng).title(key).icon(BitmapDescriptorFactory.fromResource(R.drawable.mappin)));
                     }
                 }
             });
+            googleMap.setOnInfoWindowClickListener(p -> {
 
-            //LatLng location = new LatLng(-34, 151 );
-            //googleMap.addMarker(new MarkerOptions().position(location).title("Marker in Sydney"));
-            //googleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+            });
 
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.styles_json));
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -240,6 +240,7 @@ public class MapsFragment extends Fragment {
             @Override
             public void onChanged(String s) {
                 if (s.equals("Place created.")) {
+                    if(popupWindow != null)
                     popupWindow.dismiss();
                 } else makeToast(s);
             }
