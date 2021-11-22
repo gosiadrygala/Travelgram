@@ -15,6 +15,26 @@
         android:id="@+id/map"
         android:name="com.example.travelgram.Views.Fragments.MapsFragment"
         android:label="fragment_two"
-        tools:layout="@layout/fragment_maps" />
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_map_to_place"
+            app:destination="@id/place"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@anim/fui_slide_out_left" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/place"
+        android:name="com.example.travelgram.Views.Fragments.PlaceFragment"
+        android:label="place"
+        tools:layout="@layout/fragment_place">
+        <argument android:name="placeCoordinates"
+            app:argType="string[]" />
+        <action
+            android:id="@+id/action_place_to_map"
+            app:destination="@id/map"
+            app:enterAnim="@anim/fui_slide_out_left"
+            app:exitAnim="@anim/fui_slide_in_right" />
+    </fragment>
 
 </navigation>
