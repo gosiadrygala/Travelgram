@@ -1,6 +1,7 @@
 package com.example.travelgram.Views.Fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.travelgram.Models.Place;
+import com.example.travelgram.Models.WeatherResponse;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.PlaceVM.PlaceVM;
 import com.google.android.gms.maps.model.LatLng;
@@ -68,6 +70,7 @@ public class PlaceFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -128,7 +131,19 @@ public class PlaceFragment extends Fragment {
             public void onChanged(String s) {
                 if(!s.equals("true"))
                     makeToast(s);
-                else popupWindow.dismiss();
+                else if(s.equals("true"))
+                    popupWindow.dismiss();
+            }
+        });
+
+
+
+        placeVM.requestWeather(this.placeCoordinates.latitude, this.placeCoordinates.longitude);
+
+        placeVM.getWeatherResponse().observe(getViewLifecycleOwner(), new Observer<WeatherResponse>() {
+            @Override
+            public void onChanged(WeatherResponse weather) {
+                makeToast(weather.toString());
             }
         });
         return view;

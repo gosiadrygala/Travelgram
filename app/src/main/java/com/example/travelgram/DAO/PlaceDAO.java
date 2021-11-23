@@ -17,9 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PlaceDAO {
     private final FirebaseDatabase database;
@@ -112,10 +110,10 @@ public class PlaceDAO {
 
                     if(position.equals(latLng)) {
                         HashMap<Place, Image> place = new HashMap<>();
-                        List<Post> posts = new ArrayList<>();
+                        //List<Post> posts = new ArrayList<>();
                         Place value = new Place();
 
-                        for (DataSnapshot d: ds.child("posts").getChildren()) {
+                       /* for (DataSnapshot d: ds.child("posts").getChildren()) {
                             Post post = new Post();
                             post.setPostID(d.child("postID").getValue(String.class));
                             post.setUserID(d.child("userID").getValue(String.class));
@@ -126,14 +124,14 @@ public class PlaceDAO {
                             if(d.child("comments").exists()); //TODO do this
 
                             posts.add(post);
-                        }
+                        }*/
 
                         value.setPlaceID(ds.getKey());
                         value.setDescription(ds.child("description").getValue(String.class));
                         value.setLatitude(ds.child("latitude").getValue(String.class));
                         value.setLongitude(ds.child("longitude").getValue(String.class));
                         value.setPlaceName(ds.child("placeName").getValue(String.class));
-                        value.setPosts(posts);
+                        //value.setPosts(posts);
 
                         place.put(value, null);
                         placeInfoResponse.setValue(place);
@@ -158,25 +156,8 @@ public class PlaceDAO {
     public void createPost(Place place, Post post) {
         try {
             DatabaseReference reference = database.getReference();
-            Query query = reference.child("places");
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                        double latt = Double.parseDouble(ds.child("latitude").getValue(String.class));
-                        double longg = Double.parseDouble(ds.child("longitude").getValue(String.class));
-                        if(Double.parseDouble(place.getLatitude()) == latt &&
-                                Double.parseDouble(place.getLongitude()) == longg) {
-                            reference.child("places").child(ds.getKey()).child("posts").child(post.getPostID()).setValue(post);
-                            setCreatePostToPlaceImageResponse("true");
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d("PlaceDAO", databaseError.getMessage());
-                }
-            });
+            reference.child("posts").child(place.getPlaceID()).child(post.getPostID()).setValue(post);
+            setCreatePostToPlaceImageResponse("true");
         } catch (Exception e) {
             Log.d("PlaceDAO", e.getMessage());
         }

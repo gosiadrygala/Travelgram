@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         checkIfSignedIn();
         toolbar = findViewById(R.id.topAppBar);
+
         //toolbar.setNavigationOnClickListener(v -> signInSignUpVM.signOut());
         //navController = Navigation.findNavController(this, R.id.fragmentContainerView);
 

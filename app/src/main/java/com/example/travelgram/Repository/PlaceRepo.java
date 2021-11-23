@@ -81,12 +81,11 @@ public class PlaceRepo {
     public void getPlacePicture(String placeID) {
         StorageReference mImageRef =
                 FirebaseStorage.getInstance().getReference("placeImages/" + placeID);
-        final long ONE_MEGABYTE = 1024 * 1024 *5;
+        final long ONE_MEGABYTE = 1024 * 1024 * 5;
         mImageRef.getBytes(ONE_MEGABYTE)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
-                        System.out.println(bytes);
                         HashMap<String, byte[]> response = new HashMap<>();
                         response.put(placeID, bytes);
                         getPlacePictureResponse.setValue(response);
