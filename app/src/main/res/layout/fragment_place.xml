@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,13 +10,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bottom_border">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/placeImage"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="200dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,35 +29,30 @@
                 android:id="@+id/nameOfThePlace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="serif"
-                android:text="Name of the place" />
+                android:text="Name of the place"
+                android:textColor="#000000"
+                android:textSize="25sp" />
 
-            <Button
-                android:id="@+id/followButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="serif"
-                android:text="Follow" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/descriptionOfThePlace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:fontFamily="serif"
-            android:text="Description of the place" />
+            android:text="Description of the place"
+            android:textColor="#000000"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,7 +86,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="serif"
-                        android:text="Weather" />
+                        android:text="Weather"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -114,7 +112,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="serif"
-                        android:text="Pressure" />
+                        android:text="Pressure"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -138,7 +138,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="serif"
-                        android:text="Temperature" />
+                        android:text="Temperature"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -168,7 +170,9 @@
                         android:id="@+id/sunrise"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sunrise" />
+                        android:text="Sunrise"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -189,7 +193,9 @@
                         android:id="@+id/sunset"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sunset" />
+                        android:text="Sunset"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -207,8 +213,27 @@
             android:inputType="none"
             android:focusableInTouchMode="false"
             android:gravity="start|end"
+            android:padding="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/rounded_corners"
             android:hint="Share your experience..." />
 
     </LinearLayout>
 
-</FrameLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:backgroundTint="?colorOnPrimary"
+        android:clickable="true"
+        android:src="@drawable/ic_heartfollowed"
+        app:backgroundTint="?colorPrimary"
+        app:borderWidth="3dp"
+        app:layout_anchor="@id/placeImage"
+        app:layout_anchorGravity="bottom|right|end"
+        app:maxImageSize="30dp"
+        app:rippleColor="#00FFFFFF" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

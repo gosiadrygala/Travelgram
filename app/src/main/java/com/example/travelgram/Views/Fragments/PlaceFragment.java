@@ -41,6 +41,7 @@ import com.example.travelgram.Models.WeatherResponse;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.PlaceVM.PlaceVM;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class PlaceFragment extends Fragment {
     private LatLng placeCoordinates;
     private ImageView placeImage;
     private TextView nameOfThePlace;
-    private Button followBtn;
+    private FloatingActionButton followBtn;
     private TextView descriptionOfThePlace;
     private EditText createAPostTextFieldMulti;
     private RadioButton radioButton;
@@ -83,7 +84,7 @@ public class PlaceFragment extends Fragment {
         placeImage.setVisibility(ImageView.INVISIBLE);
 
         nameOfThePlace = view.findViewById(R.id.nameOfThePlace);
-        followBtn = view.findViewById(R.id.followButton);
+        followBtn = view.findViewById(R.id.floatingActionButton);
         descriptionOfThePlace = view.findViewById(R.id.descriptionOfThePlace);
 
         String[] placeCoordinates = requireArguments().getStringArray("placeCoordinates");
@@ -136,17 +137,28 @@ public class PlaceFragment extends Fragment {
             }
         });
 
-
-
         placeVM.requestWeather(this.placeCoordinates.latitude, this.placeCoordinates.longitude);
 
         placeVM.getWeatherResponse().observe(getViewLifecycleOwner(), new Observer<WeatherResponse>() {
             @Override
             public void onChanged(WeatherResponse weather) {
-                makeToast(weather.toString());
+                populateWeather(weather);
             }
         });
         return view;
+    }
+
+    private void populateWeather(WeatherResponse weatherResponse) {
+        TextView weather = (TextView) view.findViewById(R.id.weather);
+        weather.setText(weatherResponse.getWeather().get(0).getDescription());
+        TextView pressure = (TextView) view.findViewById(R.id.pressure);
+        pressure.setText(String.valueOf(weatherResponse.getMain().getPressure()) + " Pa");
+        TextView temperature = (TextView) view.findViewById(R.id.temperature);
+        temperature.setText(String.valueOf(weatherResponse.getMain().getTemp()) + "°C");
+        TextView sunrise = (TextView) view.findViewById(R.id.sunrise);
+        sunrise.setText(weatherResponse.getSys().getSunrise());
+        TextView sunset = (TextView) view.findViewById(R.id.sunset);
+        sunset.setText(weatherResponse.getSys().getSunset());
     }
 
     @Override

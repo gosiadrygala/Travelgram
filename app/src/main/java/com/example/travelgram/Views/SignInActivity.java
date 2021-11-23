@@ -1,14 +1,14 @@
 package com.example.travelgram.Views;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
@@ -23,11 +23,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        //checkIfSignedIn();
-
         signInSignUpVM = new ViewModelProvider(this).get(SignInSignUpVM.class);
-
-        //signInSignUpVM.signOut();
 
         observerForSignInResponse();
         signInSignUpVM.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
@@ -44,14 +40,6 @@ public class SignInActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if(bundle != null && bundle.containsKey("registerResponse"))
             Toast.makeText(this, bundle.getString("registerResponse"), Toast.LENGTH_LONG).show();
-    }
-
-    private void checkIfSignedIn() {
-        signInSignUpVM.getCurrentUser().observe(this, user -> {
-            if(user != null) {
-                startActivity(new Intent(this, MainActivity.class));
-            }
-        });
     }
 
     public void SignUpBtnClick(View view) {

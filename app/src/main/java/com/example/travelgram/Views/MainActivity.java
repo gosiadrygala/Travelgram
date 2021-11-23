@@ -1,36 +1,25 @@
 package com.example.travelgram.Views;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Button;
-
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends AppCompatActivity {
@@ -46,21 +35,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        //bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        //bottomNavigationView.setSelectedItemId(R.id.page_1);
 
         signInSignUpVM = new ViewModelProvider(this).get(SignInSignUpVM.class);
 
         checkIfSignedIn();
         toolbar = findViewById(R.id.topAppBar);
-
-        //toolbar.setNavigationOnClickListener(v -> signInSignUpVM.signOut());
-        //navController = Navigation.findNavController(this, R.id.fragmentContainerView);
-
-
-        // eed = findViewById(R.id.feed);
-        //feed.setOnClickListener(v-> navController.navigate(R.id.feedFragment));
-        //buttonFragmentTwo.setOnClickListener(v-> navController.navigate(R.id.fragmentTwo));
         setupNavigation();
     }
 
@@ -83,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+        String email = signInSignUpVM.getCurrentUser().getValue().getEmail();
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+
+            }
+        });
     }
 
     @Override

@@ -8,17 +8,17 @@ public class User {
     private String username;
     private String password;
     private String shortDescription;
-    private String picture;
+    private String pictureID;
 
     public User() {
     }
 
-    public User(String email, String username, String password, String shortDescription, String picture) {
+    public User(String email, String username, String password, String shortDescription, String pictureID) {
         this.email = email;
         this.username = username;
         this.password = password;
         this.shortDescription = shortDescription;
-        this.picture = picture;
+        this.pictureID = pictureID;
     }
 
     public String getEmail() {
@@ -53,12 +53,12 @@ public class User {
         this.shortDescription = shortDescription;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getPictureID() {
+        return pictureID;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setPictureID(String pictureID) {
+        this.pictureID = pictureID;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", shortDescription='" + shortDescription + '\'' +
-                ", picture='" + picture + '\'' +
+                ", picture='" + pictureID + '\'' +
                 '}';
     }
 }

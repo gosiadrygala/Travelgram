@@ -5,6 +5,7 @@ import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -19,7 +20,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.database.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,28 +125,21 @@ public class PlaceVM extends AndroidViewModel {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.code() == 200) {
-                    double tempFar = response.body().getMain().getTemp();
-                    double temp = (tempFar - 32) * 5/9;
+                    double tempKel = response.body().getMain().getTemp();
+                    int temp = (int) (tempKel - 273.15);
                     response.body().getMain().setTemp(temp);
 
-                    int hoursSunrise = Integer.parseInt(response.body().getSys().getSunrise()) / 3600;
-                    int minutesSunrise = (Integer.parseInt(response.body().getSys().getSunrise()) % 3600) / 60;
-                    int secondsSunrise = Integer.parseInt(response.body().getSys().getSunrise()) % 60;
+                    long sunrise = Integer.parseInt(response.body().getSys().getSunrise());
+                    long sunset = Integer.parseInt(response.body().getSys().getSunset());
 
-                    String timeSunrise = String.format("%02d:%02d:%02d", hoursSunrise, minutesSunrise, secondsSunrise);
-                    response.body().getSys().setSunrise(timeSunrise);
+                    String sunriseDate = getDate(sunrise);
+                    String sunsetDate = getDate(sunset);
 
-
-                    int hoursSunset = Integer.parseInt(response.body().getSys().getSunset()) / 3600;
-                    int minutesSunset = (Integer.parseInt(response.body().getSys().getSunset()) % 3600) / 60;
-                    int secondsSunset = Integer.parseInt(response.body().getSys().getSunset()) % 60;
-
-                    String timeSunset = String.format("%02d:%02d:%02d", hoursSunset, minutesSunset, secondsSunset);
-                    response.body().getSys().setSunset(timeSunset);
+                    response.body().getSys().setSunrise(sunriseDate);
+                    response.body().getSys().setSunset(sunsetDate);
 
                     weatherResponse.setValue(response.body());
                 }
-
             }
 
             @Override
@@ -148,6 +147,17 @@ public class PlaceVM extends AndroidViewModel {
                 Log.i("Retrofit", t.getMessage());
             }
         });
+    }
+
+    @NonNull
+    private String getDate(long time) {
+        Calendar calendar = Calendar.getInstance();
+        TimeZone tz = TimeZone.getDefault();
+        calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        Date timeDate = new Date(time *1000);
+        String format = sdf.format(timeDate);
+        return format;
     }
 
     public MutableLiveData<WeatherResponse> getWeatherResponse() { return weatherResponse; }
