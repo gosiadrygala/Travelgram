@@ -1,12 +1,13 @@
 package com.example.travelgram.Models;
 
-
+import java.util.Arrays;
 import java.util.List;
 
 public class Post {
     private String postID;
     private String content;
     private String imageID;
+    private byte[] picture;
     private int likeCount;
     private String dateOfCreation;
     private String userID;
@@ -19,6 +20,17 @@ public class Post {
         this.postID = postID;
         this.content = content;
         this.imageID = imageID;
+        this.likeCount = likeCount;
+        this.dateOfCreation = dateOfCreation;
+        this.userID = userID;
+        this.comments = comments;
+    }
+
+    public Post(String postID, String content, String imageID, byte[] picture, int likeCount, String dateOfCreation, String userID, List<Comment> comments) {
+        this.postID = postID;
+        this.content = content;
+        this.imageID = imageID;
+        this.picture = picture;
         this.likeCount = likeCount;
         this.dateOfCreation = dateOfCreation;
         this.userID = userID;
@@ -81,12 +93,21 @@ public class Post {
         this.comments = comments;
     }
 
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
                 "postID='" + postID + '\'' +
                 ", content='" + content + '\'' +
                 ", imageID='" + imageID + '\'' +
+                ", picture=" + Arrays.toString(picture) +
                 ", likeCount=" + likeCount +
                 ", dateOfCreation='" + dateOfCreation + '\'' +
                 ", userID='" + userID + '\'' +
