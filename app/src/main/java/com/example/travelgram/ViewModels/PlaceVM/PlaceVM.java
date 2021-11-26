@@ -170,4 +170,16 @@ public class PlaceVM extends AndroidViewModel {
     public MutableLiveData<HashMap<Integer, Post>> getPostPictureResponse() {
         return placeRepo.getPostPictureResponse();
     }
+
+    public void followUnfollowPlace(String placeID, String email, boolean followBtnState) {
+        placeDAO.followUnfollowPlace(placeID, email, followBtnState);
+    }
+
+    public MutableLiveData<Boolean> getFollowResponse() {
+        return placeDAO.getFollowResponse();
+    }
+
+    public void getFollowState(String placeID, String email) {
+        placeDAO.getFollowState(placeID, email);
+    }
 }

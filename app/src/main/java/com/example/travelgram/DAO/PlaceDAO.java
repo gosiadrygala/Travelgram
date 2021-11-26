@@ -3,11 +3,13 @@ package com.example.travelgram.DAO;
 import android.media.Image;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +28,7 @@ public class PlaceDAO {
     private final MutableLiveData<HashMap<Place, Image>> placeInfoResponse;
     private final MutableLiveData<String> createPostToPlaceImageResponse;
     private final MutableLiveData<ArrayList<Post>> postsForPlaceResponse;
+    private MutableLiveData<Boolean> followResponse;
 
     private PlaceDAO() {
         database = FirebaseDatabase.getInstance("https://travelgram-67699-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -34,6 +37,7 @@ public class PlaceDAO {
         placeInfoResponse = new MutableLiveData<>();
         createPostToPlaceImageResponse = new MutableLiveData<>();
         postsForPlaceResponse = new MutableLiveData<>();
+        followResponse = new MutableLiveData<>();
     }
 
     public static synchronized PlaceDAO getInstance() {
@@ -186,5 +190,54 @@ public class PlaceDAO {
 
     public MutableLiveData<ArrayList<Post>> getPostsForPlaceResponse() {
         return postsForPlaceResponse;
+    }
+
+    public void followUnfollowPlace(String placeID, String email, boolean followBtnState) {
+        email = email.replace(".", ",");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        if(followBtnState){
+            Query query = reference.child("follows").child(placeID).child(email);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    snapshot.getRef().removeValue();
+                    followResponse.setValue(false);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("PlaceDAO", error.getMessage());
+                }
+            });
+        }
+        else{
+            reference.child("follows").child(placeID).child(email).setValue(email);
+            followResponse.setValue(true);
+        }
+    }
+
+    public MutableLiveData<Boolean> getFollowResponse() {
+        return followResponse;
+    }
+
+    public void getFollowState(String placeID, String email) {
+        email = email.replace(".", ",");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child(placeID).child(email);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getChildrenCount()>0) {
+                    followResponse.setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("PlaceDAO", error.getMessage());
+            }
+        });
     }
 }

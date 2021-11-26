@@ -247,7 +247,7 @@
         android:layout_marginRight="10dp"
         android:backgroundTint="?colorOnPrimary"
         android:clickable="true"
-        android:src="@drawable/ic_heartfollowed"
+        android:src="@drawable/ic_heartunfollowed"
         app:backgroundTint="?colorPrimary"
         app:borderWidth="3dp"
         app:layout_anchor="@id/placeImage"

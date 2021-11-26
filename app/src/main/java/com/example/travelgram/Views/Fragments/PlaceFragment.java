@@ -76,6 +76,9 @@ public class PlaceFragment extends Fragment {
     private ArrayList<Post> posts;
     private int index;
 
+    private boolean followBtnState;
+    private String placeID;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +151,34 @@ public class PlaceFragment extends Fragment {
         getPictureForFirstPost();
 
         getPicturesForAllPosts();
+        placeVM.getFollowResponse().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    followBtnState = true;
+                    followBtn.setImageResource(R.drawable.ic_heartfollowed1);
+                }else{
+                    followBtnState = false;
+                    followBtn.setImageResource(R.drawable.ic_heartunfollowed);
+                }
+            }
+        });
+
+
+
         return view;
+    }
+
+    private void checkFollowBtnState(String placeID) {
+        placeVM.getFollowState(placeID,
+                signInSignUpVM.getCurrentUser().getValue().getEmail());
+    }
+
+    private void listenForFollowButton(String placeID) {
+        followBtn.setOnClickListener(v -> {
+            placeVM.followUnfollowPlace(placeID,
+                    signInSignUpVM.getCurrentUser().getValue().getEmail(), followBtnState);
+        });
     }
 
     private void getPicturesForAllPosts() {
@@ -176,8 +206,10 @@ public class PlaceFragment extends Fragment {
         placeVM.getPostsForPlaceWithoutPictureResponse().observe(getViewLifecycleOwner(), new Observer<ArrayList<Post>>() {
             @Override
             public void onChanged(ArrayList<Post> posts) {
-                setPostsAndIndex(posts, 0);
-                placeVM.getImageForPost(posts.get(0), 0);
+                if(posts.size() != 0) {
+                    setPostsAndIndex(posts, 0);
+                    placeVM.getImageForPost(posts.get(0), 0);
+                }
             }
         });
     }
@@ -204,6 +236,9 @@ public class PlaceFragment extends Fragment {
                     placeVM.getPlacePicture(entry.getKey().getPlaceID());
                     nameOfThePlace.setText(entry.getKey().getPlaceName());
                     descriptionOfThePlace.setText(entry.getKey().getDescription());
+                    placeID = currentPlace.getValue().getPlaceID();
+                    checkFollowBtnState(placeID);
+                    listenForFollowButton(placeID);
                     placeVM.getPostsForPlace(currentPlace.getValue().getPlaceID());
                 }
             }
