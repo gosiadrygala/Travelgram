@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
@@ -25,24 +26,28 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.travelgram.Adapter.PostAdapter;
 import com.example.travelgram.Models.Place;
+import com.example.travelgram.Models.Post;
 import com.example.travelgram.Models.WeatherResponse;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.PlaceVM.PlaceVM;
+import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +57,6 @@ public class PlaceFragment extends Fragment {
     private PopupWindow popupWindow;
     private Uri image;
 
-    private LatLng placeCoordinates;
     private ImageView placeImage;
     private TextView nameOfThePlace;
     private FloatingActionButton followBtn;
@@ -63,8 +67,14 @@ public class PlaceFragment extends Fragment {
     private ImageButton uploadPicture;
     private Button createPostButton;
     private MutableLiveData<Place> currentPlace;
+    private SignInSignUpVM signInSignUpVM;
 
     private static final int PICK_FROM_GALLERY = 1;
+
+    private RecyclerView postsList;
+    private PostAdapter postAdapter;
+    private ArrayList<Post> posts;
+    private int index;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +88,9 @@ public class PlaceFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_place, container, false);
 
+        signInSignUpVM = new ViewModelProvider(getActivity()).get(SignInSignUpVM.class);
+        placeVM = new ViewModelProvider(getActivity()).get(PlaceVM.class);
+
         currentPlace = new MutableLiveData<>();
 
         placeImage = view.findViewById(R.id.placeImage);
@@ -88,23 +101,88 @@ public class PlaceFragment extends Fragment {
         descriptionOfThePlace = view.findViewById(R.id.descriptionOfThePlace);
 
         String[] placeCoordinates = requireArguments().getStringArray("placeCoordinates");
-        this.placeCoordinates = new LatLng(Double.parseDouble(placeCoordinates[0]), Double.parseDouble(placeCoordinates[1]));
+        LatLng placeCoordinates1 = new LatLng(Double.parseDouble(placeCoordinates[0]), Double.parseDouble(placeCoordinates[1]));
 
-        placeVM = new ViewModelProvider(getActivity()).get(PlaceVM.class);
-        placeVM.getPlaceInfo(this.placeCoordinates);
+        placeVM.getPlaceInfo(placeCoordinates1);
 
-        placeVM.getPlaceInfoResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<Place, Image>>() {
+        listenForPlaceInfoResponse();
+
+        listenForPlacePictureResponse();
+
+        createAPostTextFieldMulti = view.findViewById(R.id.createAPostTextFieldMulti);
+
+        createAPostTextFieldMulti.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onChanged(HashMap<Place, Image> place) {
-                for (Map.Entry<Place, Image> entry : place.entrySet()) {
-                    currentPlace.setValue(entry.getKey());
-                    placeVM.getPlacePicture(entry.getKey().getPlaceID());
-                    nameOfThePlace.setText(entry.getKey().getPlaceName());
-                    descriptionOfThePlace.setText(entry.getKey().getDescription());
-                }
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEvent.ACTION_UP == event.getAction())
+                    PopUpWindow();
+                return false;
             }
         });
 
+        placeVM.getCreatePostToPlaceImageResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (!s.equals("true"))
+                    makeToast(s);
+                else if (s.equals("true"))
+                    if(popupWindow != null)
+                        popupWindow.dismiss();
+            }
+        });
+
+        placeVM.requestWeather(placeCoordinates1.latitude, placeCoordinates1.longitude);
+
+        placeVM.getWeatherResponse().observe(getViewLifecycleOwner(), new Observer<WeatherResponse>() {
+            @Override
+            public void onChanged(WeatherResponse weather) {
+                populateWeather(weather);
+            }
+        });
+
+
+        postsList = view.findViewById(R.id.rvPost);
+        postsList.hasFixedSize();
+        postsList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        getPictureForFirstPost();
+
+        getPicturesForAllPosts();
+        return view;
+    }
+
+    private void getPicturesForAllPosts() {
+        placeVM.getPostPictureResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, Post>>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onChanged(HashMap<Integer, Post> integerPostHashMap) {
+                if(getIndex() < getPosts().size() - 1){
+                    incrementIndex();
+                    placeVM.getImageForPost(posts.get(getIndex()), getIndex());
+                }
+                else{
+                    ArrayList<Post> posts1 = new ArrayList<>();
+                    integerPostHashMap.forEach((k, v) ->
+                            posts1.add(v)
+                    );
+                    postAdapter = new PostAdapter(posts1);
+                    postsList.setAdapter(postAdapter);
+                }
+            }
+        });
+    }
+
+    private void getPictureForFirstPost() {
+        placeVM.getPostsForPlaceWithoutPictureResponse().observe(getViewLifecycleOwner(), new Observer<ArrayList<Post>>() {
+            @Override
+            public void onChanged(ArrayList<Post> posts) {
+                setPostsAndIndex(posts, 0);
+                placeVM.getImageForPost(posts.get(0), 0);
+            }
+        });
+    }
+
+    private void listenForPlacePictureResponse() {
         placeVM.getPlacePictureResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<String, byte[]>>() {
             @Override
             public void onChanged(HashMap<String, byte[]> stringHashMap) {
@@ -115,37 +193,38 @@ public class PlaceFragment extends Fragment {
                 }
             }
         });
+    }
 
-        createAPostTextFieldMulti = view.findViewById(R.id.createAPostTextFieldMulti);
-
-        createAPostTextFieldMulti.setOnTouchListener(new View.OnTouchListener() {
+    private void listenForPlaceInfoResponse() {
+        placeVM.getPlaceInfoResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<Place, Image>>() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(MotionEvent.ACTION_UP == event.getAction())
-                    PopUpWindow();
-                return false;
+            public void onChanged(HashMap<Place, Image> place) {
+                for (Map.Entry<Place, Image> entry : place.entrySet()) {
+                    currentPlace.setValue(entry.getKey());
+                    placeVM.getPlacePicture(entry.getKey().getPlaceID());
+                    nameOfThePlace.setText(entry.getKey().getPlaceName());
+                    descriptionOfThePlace.setText(entry.getKey().getDescription());
+                    placeVM.getPostsForPlace(currentPlace.getValue().getPlaceID());
+                }
             }
         });
+    }
 
-        placeVM.getCreatePostToPlaceImageResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if(!s.equals("true"))
-                    makeToast(s);
-                else if(s.equals("true"))
-                    popupWindow.dismiss();
-            }
-        });
+    private void setPostsAndIndex(ArrayList<Post> posts, int i) {
+        this.index = i;
+        this.posts = posts;
+    }
 
-        placeVM.requestWeather(this.placeCoordinates.latitude, this.placeCoordinates.longitude);
+    private ArrayList<Post> getPosts(){
+        return posts;
+    }
 
-        placeVM.getWeatherResponse().observe(getViewLifecycleOwner(), new Observer<WeatherResponse>() {
-            @Override
-            public void onChanged(WeatherResponse weather) {
-                populateWeather(weather);
-            }
-        });
-        return view;
+    public int getIndex() {
+        return index;
+    }
+
+    public void incrementIndex() {
+        this.index++;
     }
 
     private void populateWeather(WeatherResponse weatherResponse) {
@@ -207,7 +286,7 @@ public class PlaceFragment extends Fragment {
     }
 
     private void createPost() {
-        placeVM.createPostToPlace(currentPlace.getValue(), contentField.getText().toString(), image);
+        placeVM.createPostToPlace(currentPlace.getValue(), contentField.getText().toString(), image, signInSignUpVM.getCurrentUser().getValue().getEmail());
     }
 
     private void makeToast(String response) {
