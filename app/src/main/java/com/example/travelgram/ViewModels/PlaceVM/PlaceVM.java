@@ -21,7 +21,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.database.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,12 +34,14 @@ import retrofit2.Response;
 public class PlaceVM extends AndroidViewModel {
 
     private final PlaceRepo placeRepo;
+    private MutableLiveData<String> createPlaceResponse;
     private final PlaceDAO placeDAO;
     private MutableLiveData<WeatherResponse> weatherResponse;
 
     public PlaceVM(@NotNull Application app) {
         super(app);
         placeRepo = PlaceRepo.getInstance(app);
+        createPlaceResponse = new MutableLiveData<>();
         placeDAO = PlaceDAO.getInstance();
         weatherResponse = new MutableLiveData<>();
     }
@@ -87,7 +88,7 @@ public class PlaceVM extends AndroidViewModel {
         return placeRepo.getGetPlacePictureResponse();
     }
 
-    public void createPostToPlace(Place place, String postContent, Uri image, String email) {
+    public void createPostToPlace(Place place, String postContent, Uri image) {
         if(place.getPlaceID().equals("") || place.getPlaceID().isEmpty()) {
             setCreatePostToPlaceImageResponse("Something went wrong!");
         } else if(postContent.length() < 5) {
@@ -96,9 +97,15 @@ public class PlaceVM extends AndroidViewModel {
             setCreatePostToPlaceImageResponse("Add image to create a post");
         }
         else {
-            Post post = new Post("", postContent, "", 0, "", email, null);
+            Post post = new Post("", postContent, "", 0, "", "userID", null);
             placeRepo.createPostToPlaceImage(place, post, image);
         }
+        //else {
+          //  String dateAndTime = Calendar.getInstance().getTime().toString();
+          //  UUID uuid = UUID.nameUUIDFromBytes(dateAndTime.getBytes());
+           // Post post = new Post(uuid.toString(), postContent, "", 0, dateAndTime, "userID", null);
+            //placeDAO.createPost(place, post);
+      //  }
     }
 
     private void setCreatePostToPlaceImageResponse(String response) {
@@ -154,20 +161,4 @@ public class PlaceVM extends AndroidViewModel {
     }
 
     public MutableLiveData<WeatherResponse> getWeatherResponse() { return weatherResponse; }
-
-    public void getPostsForPlace(String placeID) {
-        placeDAO.getPostsForPlace(placeID);
-    }
-
-    public MutableLiveData<ArrayList<Post>> getPostsForPlaceWithoutPictureResponse(){
-        return placeDAO.getPostsForPlaceResponse();
-    }
-
-    public void getImageForPost(Post post, int index) {
-        placeRepo.getImageForPost(post, index);
-    }
-
-    public MutableLiveData<HashMap<Integer, Post>> getPostPictureResponse() {
-        return placeRepo.getPostPictureResponse();
-    }
 }

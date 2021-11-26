@@ -8,7 +8,6 @@
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.28703703703703703" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_map_24.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.28703703703703703" />
-        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_comment1.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_homeicon.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_icons8_heart_50.xml" value="0.3828125" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/drawable/ic_icons_marker_64.xml" value="0.28703703703703703" />
@@ -35,11 +34,10 @@
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_blank.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_feed.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_maps.xml" value="0.33" />
-        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_place.xml" value="0.1" />
+        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_place.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_pop_up_window.xml" value="0.31574074074074077" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_share_experience_pop_up_window.xml" value="0.31574074074074077" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/fragment_sign_in.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/layout/post_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/menu-v26/top_app_bar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
         <entry key="..\:/Users/karl1/AndroidStudioProjects/Travelgram/app/src/main/res/menu/top_app_bar.xml" value="0.20520833333333333" />

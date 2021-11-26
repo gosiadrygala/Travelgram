@@ -2,8 +2,10 @@ package com.example.travelgram.DAO;
 
 import android.media.Image;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
 import com.google.android.gms.maps.model.LatLng;
@@ -14,18 +16,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.Objects;
 
 public class PlaceDAO {
     private final FirebaseDatabase database;
     private static PlaceDAO instance;
-    private final MutableLiveData<String> createPlaceResponse;
-    private final MutableLiveData<HashMap<LatLng, String>> markerResponse;
-    private final MutableLiveData<HashMap<Place, Image>> placeInfoResponse;
-    private final MutableLiveData<String> createPostToPlaceImageResponse;
-    private final MutableLiveData<ArrayList<Post>> postsForPlaceResponse;
+    private MutableLiveData<String> createPlaceResponse;
+    private MutableLiveData<HashMap<LatLng, String>> markerResponse;
+    private MutableLiveData<HashMap<Place, Image>> placeInfoResponse;
+    private MutableLiveData<String> createPostToPlaceImageResponse;
 
     private PlaceDAO() {
         database = FirebaseDatabase.getInstance("https://travelgram-67699-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -33,7 +33,6 @@ public class PlaceDAO {
         markerResponse = new MutableLiveData<>();
         placeInfoResponse = new MutableLiveData<>();
         createPostToPlaceImageResponse = new MutableLiveData<>();
-        postsForPlaceResponse = new MutableLiveData<>();
     }
 
     public static synchronized PlaceDAO getInstance() {
@@ -58,7 +57,7 @@ public class PlaceDAO {
             createPlaceResponse.setValue("Place created.");
             HashMap<LatLng, String> markersInArea = new HashMap<>();
             markersInArea.put(latLng, place.getPlaceName());
-            markersInArea.putAll(Objects.requireNonNull(markerResponse.getValue()));
+            markersInArea.putAll(markerResponse.getValue());
             markerResponse.setValue(markersInArea);
         } catch (Exception e) {
             Log.d("PlaceDAO", e.getMessage());
@@ -162,29 +161,5 @@ public class PlaceDAO {
         } catch (Exception e) {
             Log.d("PlaceDAO", e.getMessage());
         }
-    }
-
-    public void getPostsForPlace(String placeID) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("posts").child(placeID).limitToFirst(10);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<Post> posts = new ArrayList<>();
-                for (DataSnapshot ds: snapshot.getChildren()) {
-                    posts.add(ds.getValue(Post.class));
-                }
-                postsForPlaceResponse.setValue(posts);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("PlaceDAO", error.getMessage());
-            }
-        });
-    }
-
-    public MutableLiveData<ArrayList<Post>> getPostsForPlaceResponse() {
-        return postsForPlaceResponse;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.travelgram.Models;
 
+import android.net.Uri;
+
 import java.util.List;
 
 public class Place {

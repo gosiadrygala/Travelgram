@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.PlaceVM.PlaceVM;
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +58,15 @@ public class MapsFragment extends Fragment {
     private static final int PICK_FROM_GALLERY = 1;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
+        /**
+         * Manipulates the map once available.
+         * This callback is triggered when the map is ready to be used.
+         * This is where we can add markers or lines, add listeners or move the camera.
+         * In this case, we just add a marker near Sydney, Australia.
+         * If Google Play services is not installed on the device, the user will be prompted to
+         * install it inside the SupportMapFragment. This method will only be triggered once the
+         * user has installed Google Play services and returned to the app.
+         */
         GoogleMap googleMap;
         @SuppressLint({"MissingPermission", "NewApi"})
         ActivityResultLauncher<String[]> locationPermissionRequest =
@@ -85,12 +97,22 @@ public class MapsFragment extends Fragment {
                     LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
                     if (camera.zoom != currentZoom) {
                         currentZoom = camera.zoom;
+                        //here you will then check your markers
                         placeVM.getMarkersInArea(bounds);
                     }
                 }
             });
 
-            listenForMarkerResponse(googleMap);
+            placeVM.getMarkerResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<LatLng, String>>() {
+                @Override
+                public void onChanged(HashMap<LatLng, String> stringLatLngHashMap) {
+                    for (Map.Entry<LatLng, String> entry : stringLatLngHashMap.entrySet()) {
+                        String key = entry.getValue();
+                        LatLng latLng = entry.getKey();
+                        googleMap.addMarker(new MarkerOptions().position(latLng).title(key).icon(BitmapDescriptorFactory.fromResource(R.drawable.mappin)));
+                    }
+                }
+            });
 
             googleMap.setOnInfoWindowClickListener(p -> {
                 LatLng position = p.getPosition();
@@ -119,19 +141,6 @@ public class MapsFragment extends Fragment {
             });
         }
     };
-
-    private void listenForMarkerResponse(GoogleMap googleMap) {
-        placeVM.getMarkerResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<LatLng, String>>() {
-            @Override
-            public void onChanged(HashMap<LatLng, String> stringLatLngHashMap) {
-                for (Map.Entry<LatLng, String> entry : stringLatLngHashMap.entrySet()) {
-                    String key = entry.getValue();
-                    LatLng latLng = entry.getKey();
-                    googleMap.addMarker(new MarkerOptions().position(latLng).title(key).icon(BitmapDescriptorFactory.fromResource(R.drawable.mappin)));
-                }
-            }
-        });
-    }
 
     @SuppressLint("ResourceAsColor")
     private void PopUpWindow(LatLng latLng) {
