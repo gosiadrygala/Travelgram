@@ -81,20 +81,21 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shortDescMultiFiled"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:layout_constraintWidth_percent="0.65" />
 
     <TextView
         android:id="@+id/forgotPasswordText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="75dp"
         android:clickable="true"
         android:fontFamily="serif"
         android:onClick="BackToSignIn"
         android:text="@string/already_have_an_account_sign_in"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signInBtn2"
         tools:ignore="KeyboardInaccessibleWidget" />
@@ -132,5 +133,41 @@
         app:layout_constraintTop_toBottomOf="@+id/signUpPassword"
         app:layout_constraintWidth_percent="0.7"
         tools:ignore="HardcodedText" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shortDescMultiFiled">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:fontFamily="serif"
+            android:text="Upload a picture" />
+
+        <ImageButton
+            android:id="@+id/uploadPictureSignUp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:src="@android:drawable/ic_menu_upload" />
+
+        <RadioButton
+            android:id="@+id/radioButtonSingUp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,8 +8,12 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.travelgram.DAO.PlaceDAO;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
+import com.example.travelgram.Models.User;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -23,8 +27,8 @@ public class PlaceRepo {
     private final Application app;
     private final StorageReference mStorage;
     private final PlaceDAO placeDAO;
-    private final MutableLiveData<HashMap<String, byte[]>> getPlacePictureResponse;
-    private final MutableLiveData<ArrayList<Post>> postsForPlaceWithPictureResponse;
+    private MutableLiveData<HashMap<String, byte[]>> getPlacePictureResponse;
+    private MutableLiveData<ArrayList<Post>> postsForPlaceWithPictureResponse;
 
     private final MutableLiveData<HashMap<Integer, Post>> postPictureResponse;
 
@@ -70,7 +74,34 @@ public class PlaceRepo {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 place.setPlaceID(uuid.toString());
-                placeDAO.createPlace(place);
+                createImageAndPlace(place, image);
+            }
+        });
+    }
+
+    private void createImageAndPlace(Place place, Uri image) {
+        final StorageReference ref = mStorage.child("placeImages/" + place.getPlaceID());
+        UploadTask uploadTask = ref.putFile(image);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                return ref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    place.setPlaceImageID(downloadUri.toString());
+                    placeDAO.createPlace(place);
+                } else {
+                    setCreatePlaceResponse(task.getException().getMessage());
+                }
             }
         });
     }
@@ -103,56 +134,36 @@ public class PlaceRepo {
         String dateAndTime = Calendar.getInstance().getTime().toString();
         UUID uuid = UUID.nameUUIDFromBytes(dateAndTime.getBytes());
 
-        StorageReference riversRef = mStorage.child("postImages/" + uuid.toString());
-        UploadTask uploadTask = riversRef.putFile(image);
+        final StorageReference ref = mStorage.child("postImages/" + place.getPlaceID());
+        UploadTask uploadTask = ref.putFile(image);
 
-        uploadTask.addOnFailureListener(new OnFailureListener() {
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
-            public void onFailure(@NonNull Exception exception) {
-                setCreatePostToPlaceImageResponse("Uploading the image failed. Please try again.");
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                return ref.getDownloadUrl();
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                post.setImageID(uuid.toString());
-                post.setPostID(uuid.toString());
-                post.setDateOfCreation(dateAndTime);
-                placeDAO.createPost(place, post);
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    post.setPostPicture(downloadUri.toString());
+                    post.setPostID(uuid.toString());
+                    post.setDateOfCreation(dateAndTime);
+                    placeDAO.createPost(place, post);
+                } else {
+                    setCreatePostToPlaceImageResponse("Uploading the image failed. Please try again.");
+                }
             }
         });
     }
-
 
     public MutableLiveData<ArrayList<Post>> getPostsForPlaceWithPictureResponse() {
         return postsForPlaceWithPictureResponse;
-    }
-
-    public void getImageForPost(Post post, int index) {
-        StorageReference mImageRef =
-                mStorage.getStorage().getReference("postImages/" + post.getPostID());
-        final long ONE_MEGABYTE = 1024 * 1024 * 5;
-        mImageRef.getBytes(ONE_MEGABYTE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        post.setPicture(bytes);
-                        HashMap<Integer, Post> posts = postPictureResponse.getValue();
-                        if(posts == null){
-                            posts = new HashMap<>();
-                            posts.put(index, post);
-                            postPictureResponse.setValue(posts);
-                        }else {
-                            posts.put(index, post);
-                            postPictureResponse.setValue(posts);
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                System.out.println(exception.getMessage());
-                Log.d("PlaceRepo", exception.getMessage());
-            }
-        });
     }
 
     public MutableLiveData<HashMap<Integer, Post>> getPostPictureResponse() {

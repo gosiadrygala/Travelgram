@@ -75,7 +75,7 @@ public class PlaceVM extends AndroidViewModel {
         placeDAO.getPlaceInfo(position);
     }
 
-    public MutableLiveData<HashMap<Place, Image>> getPlaceInfoResponse() {
+    public MutableLiveData<Place> getPlaceInfoResponse() {
         return placeDAO.getPlaceInfoResponse();
     }
 
@@ -96,7 +96,10 @@ public class PlaceVM extends AndroidViewModel {
             setCreatePostToPlaceImageResponse("Add image to create a post");
         }
         else {
-            Post post = new Post("", postContent, "", 0, "", email, null);
+            Post post = new Post();
+            post.setContent(postContent);
+            post.setUserEmail(email);
+            post.setLikeCount(0);
             placeRepo.createPostToPlaceImage(place, post, image);
         }
     }
@@ -159,16 +162,8 @@ public class PlaceVM extends AndroidViewModel {
         placeDAO.getPostsForPlace(placeID);
     }
 
-    public MutableLiveData<ArrayList<Post>> getPostsForPlaceWithoutPictureResponse(){
+    public MutableLiveData<ArrayList<Post>> getPostsForPlaceResponse(){
         return placeDAO.getPostsForPlaceResponse();
-    }
-
-    public void getImageForPost(Post post, int index) {
-        placeRepo.getImageForPost(post, index);
-    }
-
-    public MutableLiveData<HashMap<Integer, Post>> getPostPictureResponse() {
-        return placeRepo.getPostPictureResponse();
     }
 
     public void followUnfollowPlace(String placeID, String email, boolean followBtnState) {

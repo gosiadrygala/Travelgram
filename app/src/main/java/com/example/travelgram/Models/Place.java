@@ -9,6 +9,7 @@ public class Place {
     private String longitude;
     private String placeID;
     private List<Post> posts;
+    private String placeImageID;
 
     public Place() {
     }
@@ -20,6 +21,16 @@ public class Place {
         this.longitude = longitude;
         this.placeID = placeID;
         this.posts = posts;
+    }
+
+    public Place(String placeName, String description, String latitude, String longitude, String placeID, List<Post> posts, String placeImageID) {
+        this.placeName = placeName;
+        this.description = description;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.placeID = placeID;
+        this.posts = posts;
+        this.placeImageID = placeImageID;
     }
 
     public String getPlaceName() {
@@ -68,6 +79,14 @@ public class Place {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public String getPlaceImageID() {
+        return placeImageID;
+    }
+
+    public void setPlaceImageID(String placeImageID) {
+        this.placeImageID = placeImageID;
     }
 
     @Override

@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -37,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
         checkIfSignedIn();
         toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               signInSignUpVM.signOut();
+            }
+        });
         setupNavigation();
     }
 
@@ -69,4 +77,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
     }
+
+
 }

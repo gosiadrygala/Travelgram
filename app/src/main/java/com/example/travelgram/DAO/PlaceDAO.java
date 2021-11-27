@@ -2,11 +2,14 @@ package com.example.travelgram.DAO;
 
 import android.media.Image;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
+import com.example.travelgram.Models.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.database.ChildEventListener;
@@ -16,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -23,11 +27,11 @@ import java.util.Objects;
 public class PlaceDAO {
     private final FirebaseDatabase database;
     private static PlaceDAO instance;
-    private final MutableLiveData<String> createPlaceResponse;
-    private final MutableLiveData<HashMap<LatLng, String>> markerResponse;
-    private final MutableLiveData<HashMap<Place, Image>> placeInfoResponse;
-    private final MutableLiveData<String> createPostToPlaceImageResponse;
-    private final MutableLiveData<ArrayList<Post>> postsForPlaceResponse;
+    private MutableLiveData<String> createPlaceResponse;
+    private MutableLiveData<HashMap<LatLng, String>> markerResponse;
+    private MutableLiveData<Place> placeInfoResponse;
+    private MutableLiveData<String> createPostToPlaceImageResponse;
+    private MutableLiveData<ArrayList<Post>> postsForPlaceResponse;
     private MutableLiveData<Boolean> followResponse;
 
     private PlaceDAO() {
@@ -41,7 +45,7 @@ public class PlaceDAO {
     }
 
     public static synchronized PlaceDAO getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new PlaceDAO();
         return instance;
     }
@@ -80,16 +84,17 @@ public class PlaceDAO {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     double latt = Double.parseDouble(ds.child("latitude").getValue(String.class));
                     double longg = Double.parseDouble(ds.child("longitude").getValue(String.class));
                     String placeName = ds.child("placeName").getValue(String.class);
                     LatLng latLng = new LatLng(latt, longg);
-                    if(bounds.contains(latLng))
+                    if (bounds.contains(latLng))
                         markersInArea.put(latLng, placeName);
                 }
                 markerResponse.setValue(markersInArea);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d("PlaceDAO", databaseError.getMessage());
@@ -97,7 +102,7 @@ public class PlaceDAO {
         });
     }
 
-    public MutableLiveData<HashMap<Place, Image>> getPlaceInfoResponse() {
+    public MutableLiveData<Place> getPlaceInfoResponse() {
         return placeInfoResponse;
     }
 
@@ -107,17 +112,15 @@ public class PlaceDAO {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     double latt = Double.parseDouble(ds.child("latitude").getValue(String.class));
                     double longg = Double.parseDouble(ds.child("longitude").getValue(String.class));
                     LatLng latLng = new LatLng(latt, longg);
 
-                    if(position.equals(latLng)) {
-                        HashMap<Place, Image> place = new HashMap<>();
-                        //List<Post> posts = new ArrayList<>();
+                    if (position.equals(latLng)) {
                         Place value = new Place();
-
+                        value = ds.getValue(Place.class);
                        /* for (DataSnapshot d: ds.child("posts").getChildren()) {
                             Post post = new Post();
                             post.setPostID(d.child("postID").getValue(String.class));
@@ -131,18 +134,18 @@ public class PlaceDAO {
                             posts.add(post);
                         }*/
 
-                        value.setPlaceID(ds.getKey());
-                        value.setDescription(ds.child("description").getValue(String.class));
-                        value.setLatitude(ds.child("latitude").getValue(String.class));
-                        value.setLongitude(ds.child("longitude").getValue(String.class));
-                        value.setPlaceName(ds.child("placeName").getValue(String.class));
+                        //value.setPlaceID(ds.getKey());
+                        //value.setDescription(ds.child("description").getValue(String.class));
+                        //value.setLatitude(ds.child("latitude").getValue(String.class));
+                        //value.setLongitude(ds.child("longitude").getValue(String.class));
+                        //value.setPlaceName(ds.child("placeName").getValue(String.class));
                         //value.setPosts(posts);
 
-                        place.put(value, null);
-                        placeInfoResponse.setValue(place);
+                        placeInfoResponse.setValue(value);
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d("PlaceDAO", databaseError.getMessage());
@@ -161,8 +164,30 @@ public class PlaceDAO {
     public void createPost(Place place, Post post) {
         try {
             DatabaseReference reference = database.getReference();
-            reference.child("posts").child(place.getPlaceID()).child(post.getPostID()).setValue(post);
-            setCreatePostToPlaceImageResponse("true");
+
+            Query query = reference
+                    .child("users")
+                    .orderByChild("email")
+                    .equalTo(post.getUserEmail());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = new User();
+                    for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                        user = ds.getValue(User.class);
+                    }
+                    post.setUsername(user.getUsername());
+                    post.setUserPicture(user.getPictureID());
+
+                    reference.child("posts").child(place.getPlaceID()).child(post.getPostID()).setValue(post);
+                    setCreatePostToPlaceImageResponse("true");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d("PlaceDAO", databaseError.getMessage());
+                }
+            });
         } catch (Exception e) {
             Log.d("PlaceDAO", e.getMessage());
         }
@@ -175,7 +200,7 @@ public class PlaceDAO {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Post> posts = new ArrayList<>();
-                for (DataSnapshot ds: snapshot.getChildren()) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     posts.add(ds.getValue(Post.class));
                 }
                 postsForPlaceResponse.setValue(posts);
@@ -195,7 +220,7 @@ public class PlaceDAO {
     public void followUnfollowPlace(String placeID, String email, boolean followBtnState) {
         email = email.replace(".", ",");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        if(followBtnState){
+        if (followBtnState) {
             Query query = reference.child("follows").child(placeID).child(email);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -209,8 +234,7 @@ public class PlaceDAO {
                     Log.d("PlaceDAO", error.getMessage());
                 }
             });
-        }
-        else{
+        } else {
             reference.child("follows").child(placeID).child(email).setValue(email);
             followResponse.setValue(true);
         }
@@ -229,7 +253,7 @@ public class PlaceDAO {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getChildrenCount()>0) {
+                if (snapshot.getChildrenCount() > 0) {
                     followResponse.setValue(true);
                 }
             }

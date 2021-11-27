@@ -4,12 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
@@ -30,7 +26,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -47,9 +42,9 @@ import com.example.travelgram.ViewModels.PlaceVM.PlaceVM;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PlaceFragment extends Fragment {
     private View view;
@@ -73,8 +68,6 @@ public class PlaceFragment extends Fragment {
 
     private RecyclerView postsList;
     private PostAdapter postAdapter;
-    private ArrayList<Post> posts;
-    private int index;
 
     private boolean followBtnState;
     private String placeID;
@@ -97,7 +90,6 @@ public class PlaceFragment extends Fragment {
         currentPlace = new MutableLiveData<>();
 
         placeImage = view.findViewById(R.id.placeImage);
-        placeImage.setVisibility(ImageView.INVISIBLE);
 
         nameOfThePlace = view.findViewById(R.id.nameOfThePlace);
         followBtn = view.findViewById(R.id.floatingActionButton);
@@ -110,7 +102,7 @@ public class PlaceFragment extends Fragment {
 
         listenForPlaceInfoResponse();
 
-        listenForPlacePictureResponse();
+        listenForPostsResponse();
 
         createAPostTextFieldMulti = view.findViewById(R.id.createAPostTextFieldMulti);
 
@@ -129,7 +121,7 @@ public class PlaceFragment extends Fragment {
                 if (!s.equals("true"))
                     makeToast(s);
                 else if (s.equals("true"))
-                    if(popupWindow != null)
+                    if (popupWindow != null)
                         popupWindow.dismiss();
             }
         });
@@ -148,24 +140,18 @@ public class PlaceFragment extends Fragment {
         postsList.hasFixedSize();
         postsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        getPictureForFirstPost();
-
-        getPicturesForAllPosts();
         placeVM.getFollowResponse().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
+                if (aBoolean) {
                     followBtnState = true;
                     followBtn.setImageResource(R.drawable.ic_heartfollowed1);
-                }else{
+                } else {
                     followBtnState = false;
                     followBtn.setImageResource(R.drawable.ic_heartunfollowed);
                 }
             }
         });
-
-
-
         return view;
     }
 
@@ -181,85 +167,32 @@ public class PlaceFragment extends Fragment {
         });
     }
 
-    private void getPicturesForAllPosts() {
-        placeVM.getPostPictureResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, Post>>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
+    private void listenForPostsResponse() {
+        placeVM.getPostsForPlaceResponse().observe(getViewLifecycleOwner(), new Observer<ArrayList<Post>>() {
             @Override
-            public void onChanged(HashMap<Integer, Post> integerPostHashMap) {
-                if(getIndex() < getPosts().size() - 1){
-                    incrementIndex();
-                    placeVM.getImageForPost(posts.get(getIndex()), getIndex());
-                }
-                else{
-                    ArrayList<Post> posts1 = new ArrayList<>();
-                    integerPostHashMap.forEach((k, v) ->
-                            posts1.add(v)
-                    );
-                    postAdapter = new PostAdapter(posts1);
+            public void onChanged(ArrayList<Post> posts) {
+                if(posts != null || posts.size() != 0) {
+                    postAdapter = new PostAdapter(posts, signInSignUpVM.getCurrentUser().getValue().getEmail());
                     postsList.setAdapter(postAdapter);
                 }
             }
         });
     }
 
-    private void getPictureForFirstPost() {
-        placeVM.getPostsForPlaceWithoutPictureResponse().observe(getViewLifecycleOwner(), new Observer<ArrayList<Post>>() {
-            @Override
-            public void onChanged(ArrayList<Post> posts) {
-                if(posts.size() != 0) {
-                    setPostsAndIndex(posts, 0);
-                    placeVM.getImageForPost(posts.get(0), 0);
-                }
-            }
-        });
-    }
-
-    private void listenForPlacePictureResponse() {
-        placeVM.getPlacePictureResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<String, byte[]>>() {
-            @Override
-            public void onChanged(HashMap<String, byte[]> stringHashMap) {
-                for (Map.Entry<String, byte[]> entry : stringHashMap.entrySet()) {
-                    Bitmap bm = BitmapFactory.decodeByteArray(entry.getValue(), 0, entry.getValue().length);
-                    placeImage.setImageBitmap(bm);
-                    placeImage.setVisibility(ImageView.VISIBLE);
-                }
-            }
-        });
-    }
-
     private void listenForPlaceInfoResponse() {
-        placeVM.getPlaceInfoResponse().observe(getViewLifecycleOwner(), new Observer<HashMap<Place, Image>>() {
+        placeVM.getPlaceInfoResponse().observe(getViewLifecycleOwner(), new Observer<Place>() {
             @Override
-            public void onChanged(HashMap<Place, Image> place) {
-                for (Map.Entry<Place, Image> entry : place.entrySet()) {
-                    currentPlace.setValue(entry.getKey());
-                    placeVM.getPlacePicture(entry.getKey().getPlaceID());
-                    nameOfThePlace.setText(entry.getKey().getPlaceName());
-                    descriptionOfThePlace.setText(entry.getKey().getDescription());
-                    placeID = currentPlace.getValue().getPlaceID();
-                    checkFollowBtnState(placeID);
-                    listenForFollowButton(placeID);
-                    placeVM.getPostsForPlace(currentPlace.getValue().getPlaceID());
-                }
+            public void onChanged(Place place) {
+                currentPlace.setValue(place);
+                Picasso.get().load(place.getPlaceImageID()).into(placeImage);
+                nameOfThePlace.setText(place.getPlaceName());
+                descriptionOfThePlace.setText(place.getDescription());
+                placeID = currentPlace.getValue().getPlaceID();
+                checkFollowBtnState(placeID);
+                listenForFollowButton(placeID);
+                placeVM.getPostsForPlace(currentPlace.getValue().getPlaceID());
             }
         });
-    }
-
-    private void setPostsAndIndex(ArrayList<Post> posts, int i) {
-        this.index = i;
-        this.posts = posts;
-    }
-
-    private ArrayList<Post> getPosts(){
-        return posts;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void incrementIndex() {
-        this.index++;
     }
 
     private void populateWeather(WeatherResponse weatherResponse) {

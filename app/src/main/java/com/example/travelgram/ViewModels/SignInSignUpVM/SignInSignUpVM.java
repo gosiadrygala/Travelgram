@@ -1,6 +1,8 @@
 package com.example.travelgram.ViewModels.SignInSignUpVM;
 
 import android.app.Application;
+import android.net.Uri;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -29,13 +31,15 @@ public class SignInSignUpVM extends AndroidViewModel {
     /* Method used for validating the input from user, including check
      * for the existing username
      */
-    public String validateFields(String username, String email, String password, String shortDesc) {
+    public String validateFields(String username, String email, String password, String shortDesc, Uri image) {
         if(email.equals("") || username.equals("") || password.equals("") || shortDesc.equals(""))
             return "Please fill out all fields";
         if(username.length() < 5)
             return "Username is too short.";
         if(shortDesc.length() < 10)
             return "Short description is too short.";
+        if(image == null)
+            return "Upload a profile picture first.";
 
         signInSignUpRepo.getUserByUsername(username);
         return "true";
@@ -58,8 +62,8 @@ public class SignInSignUpVM extends AndroidViewModel {
     }
 
     /* Method used for actual registration of the user */
-    public void register(String username, String email, String password, String shortDesc) {
+    public void register(String username, String email, String password, String shortDesc, Uri image) {
         User user = new User(email, username, password, shortDesc, "");
-        signInSignUpRepo.signUp(user);
+        signInSignUpRepo.signUp(user, image);
     }
 }

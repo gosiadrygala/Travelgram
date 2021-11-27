@@ -1,7 +1,5 @@
 package com.example.travelgram.Adapter;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelgram.Models.Post;
 import com.example.travelgram.R;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 
@@ -19,9 +18,11 @@ import java.util.ArrayList;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private ArrayList<Post> postsList;
+    private String user;
 
-    public PostAdapter(ArrayList<Post> postsList) {
+    public PostAdapter(ArrayList<Post> postsList, String user) {
         this.postsList = postsList;
+        this.user = user;
     }
 
     @NonNull
@@ -34,11 +35,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.ViewHolder holder, int position) {
-        //TODO profile pic and other pic
-        holder.username.setText(postsList.get(position).getUserID());
+        holder.username.setText(postsList.get(position).getUsername());
         holder.postDescription.setText(postsList.get(position).getContent());
-        Bitmap bm = BitmapFactory.decodeByteArray(postsList.get(position).getPicture(), 0, postsList.get(position).getPicture().length);
-        holder.postPicture.setImageBitmap(bm);
+        Picasso.get().load(postsList.get(position).getPostPicture()).into(holder.postPicture);
+        Picasso.get().load(postsList.get(position).getUserPicture()).into(holder.profilePicture);
+        if(!postsList.get(position).getUserEmail().equals(user)){
+            holder.deleteButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -49,7 +52,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView profilePicture;
         TextView username;
-        ImageButton moreOptions;
+        ImageButton deleteButton;
         ImageView postPicture;
         ImageButton likePost;
         ImageButton commentPost;
@@ -59,7 +62,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             super(itemView);
             profilePicture = itemView.findViewById(R.id.profilePicture);
             username = itemView.findViewById(R.id.usernamePost);
-            moreOptions = itemView.findViewById(R.id.moreButton);
+            deleteButton = itemView.findViewById(R.id.deleteButton);
             postPicture = itemView.findViewById(R.id.postImage);
             likePost = itemView.findViewById(R.id.likePostButton);
             commentPost = itemView.findViewById(R.id.commentButton);
