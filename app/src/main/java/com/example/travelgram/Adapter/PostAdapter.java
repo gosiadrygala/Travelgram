@@ -1,5 +1,18 @@
-package com.example.travelgram.Adapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.travelgram.Models.Post;
+import com.example.travelgram.R;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +27,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 
-/* Post Adapter used to initialize Recycler View */
+ /*Post Adapter used to initialize Recycler View
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private ArrayList<Post> postsList;
@@ -68,5 +81,4 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             commentPost = itemView.findViewById(R.id.commentButton);
             postDescription = itemView.findViewById(R.id.postDescription);
         }
-    }
-}
+    }*/

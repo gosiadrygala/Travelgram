@@ -31,22 +31,27 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.travelgram.Adapter.PostAdapter;
+import com.example.travelgram.Adapter.PostFirebaseAdapter;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
 import com.example.travelgram.Models.WeatherResponse;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.PlaceVM.PlaceVM;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
-public class PlaceFragment extends Fragment {
+
+public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnListItemClickListener {
     private View view;
     private PlaceVM placeVM;
     private PopupWindow popupWindow;
@@ -67,7 +72,7 @@ public class PlaceFragment extends Fragment {
     private static final int PICK_FROM_GALLERY = 1;
 
     private RecyclerView postsList;
-    private PostAdapter postAdapter;
+    private PostFirebaseAdapter postFirebaseAdapter;
 
     private boolean followBtnState;
     private String placeID;
@@ -101,8 +106,6 @@ public class PlaceFragment extends Fragment {
         placeVM.getPlaceInfo(placeCoordinates1);
 
         listenForPlaceInfoResponse();
-
-        listenForPostsResponse();
 
         createAPostTextFieldMulti = view.findViewById(R.id.createAPostTextFieldMulti);
 
@@ -138,7 +141,10 @@ public class PlaceFragment extends Fragment {
 
         postsList = view.findViewById(R.id.rvPost);
         postsList.hasFixedSize();
-        postsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        postsList.setLayoutManager(linearLayoutManager);
 
         placeVM.getFollowResponse().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -152,7 +158,41 @@ public class PlaceFragment extends Fragment {
                 }
             }
         });
+
         return view;
+    }
+
+    private void extracted(String placeID) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("posts").child(placeID);
+        FirebaseRecyclerOptions<Post> options
+                = new FirebaseRecyclerOptions.Builder<Post>()
+                .setQuery(reference.orderByChild("dateOfCreation"), Post.class)
+                .build();
+
+
+        // Connecting object of required Adapter class to
+        // the Adapter class itself
+        postFirebaseAdapter = new PostFirebaseAdapter(options,
+                signInSignUpVM.getCurrentUser().getValue().getEmail(),
+                this, placeID);
+        // Connecting Adapter class with the Recycler view*/
+        postsList.setAdapter(postFirebaseAdapter);
+        onStart();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(postFirebaseAdapter != null)
+            postFirebaseAdapter.startListening();
+    }
+
+    // Function to tell the app to stop getting
+    // data from database on stopping of the activity
+    @Override public void onStop()
+    {
+        super.onStop();
+        postFirebaseAdapter.stopListening();
     }
 
     private void checkFollowBtnState(String placeID) {
@@ -167,17 +207,6 @@ public class PlaceFragment extends Fragment {
         });
     }
 
-    private void listenForPostsResponse() {
-        placeVM.getPostsForPlaceResponse().observe(getViewLifecycleOwner(), new Observer<ArrayList<Post>>() {
-            @Override
-            public void onChanged(ArrayList<Post> posts) {
-                if(posts != null || posts.size() != 0) {
-                    postAdapter = new PostAdapter(posts, signInSignUpVM.getCurrentUser().getValue().getEmail());
-                    postsList.setAdapter(postAdapter);
-                }
-            }
-        });
-    }
 
     private void listenForPlaceInfoResponse() {
         placeVM.getPlaceInfoResponse().observe(getViewLifecycleOwner(), new Observer<Place>() {
@@ -190,11 +219,12 @@ public class PlaceFragment extends Fragment {
                 placeID = currentPlace.getValue().getPlaceID();
                 checkFollowBtnState(placeID);
                 listenForFollowButton(placeID);
-                placeVM.getPostsForPlace(currentPlace.getValue().getPlaceID());
+                extracted(placeID);
             }
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void populateWeather(WeatherResponse weatherResponse) {
         TextView weather = (TextView) view.findViewById(R.id.weather);
         weather.setText(weatherResponse.getWeather().get(0).getDescription());
@@ -235,8 +265,8 @@ public class PlaceFragment extends Fragment {
 
         uploadPicture.setOnClickListener(b -> {
             try {
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PICK_FROM_GALLERY);
                 } else {
                     Intent gallery = new Intent(Intent.ACTION_PICK,
@@ -254,7 +284,7 @@ public class PlaceFragment extends Fragment {
     }
 
     private void createPost() {
-        placeVM.createPostToPlace(currentPlace.getValue(), contentField.getText().toString(), image, signInSignUpVM.getCurrentUser().getValue().getEmail());
+        placeVM.createPostToPlace(Objects.requireNonNull(currentPlace.getValue()), contentField.getText().toString(), image, Objects.requireNonNull(signInSignUpVM.getCurrentUser().getValue()).getEmail());
     }
 
     private void makeToast(String response) {
@@ -262,7 +292,7 @@ public class PlaceFragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PICK_FROM_GALLERY:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -284,4 +314,23 @@ public class PlaceFragment extends Fragment {
                     radioButton.setChecked(true);
                 }
             });
+
+    @Override
+    public void onListItemClick(String postId) {
+        placeVM.deletePost(postId, placeID);
+    }
+
+    @Override
+    public void onListItemClickLike(String postId) {
+        placeVM.likeUnlikeThisPost(postId, Objects.requireNonNull(signInSignUpVM.getCurrentUser().getValue()).getEmail(), placeID);
+    }
+
+    @Override
+    public void onListItemClickComment(String postId) {
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("placeIDpostID", new String[]{placeID, postId});
+        Navigation.findNavController(view).navigate(R.id.action_place_to_commentFragment, bundle);
+    }
+
+
 }

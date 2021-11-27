@@ -35,6 +35,21 @@
             app:destination="@id/map"
             app:enterAnim="@anim/fui_slide_out_left"
             app:exitAnim="@anim/fui_slide_in_right" />
+        <action
+            android:id="@+id/action_place_to_commentFragment"
+            app:destination="@id/commentFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/commentFragment"
+        android:name="com.example.travelgram.Views.Fragments.CommentFragment"
+        android:label="fragmentComment"
+        tools:layout="@layout/fragment_comment" >
+        <action
+            android:id="@+id/action_commentFragment_to_place"
+            app:destination="@id/place" />
+        <argument
+            android:name="placeIDpostID"
+            app:argType="string[]" />
+    </fragment>
 </navigation>

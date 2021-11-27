@@ -1,5 +1,6 @@
 package com.example.travelgram.Repository;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.net.Uri;
 import android.util.Log;
@@ -17,9 +18,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 
 public class PlaceRepo {
@@ -106,33 +111,13 @@ public class PlaceRepo {
         });
     }
 
-    public MutableLiveData<HashMap<String, byte[]>> getGetPlacePictureResponse() {
-        return getPlacePictureResponse;
-    }
 
-    public void getPlacePicture(String placeID) {
-        StorageReference mImageRef =
-                FirebaseStorage.getInstance().getReference("placeImages/" + placeID);
-        final long ONE_MEGABYTE = 1024 * 1024 * 5;
-        mImageRef.getBytes(ONE_MEGABYTE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        HashMap<String, byte[]> response = new HashMap<>();
-                        response.put(placeID, bytes);
-                        getPlacePictureResponse.setValue(response);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.d("PlaceRepo", exception.getMessage());
-            }
-        });
-    }
-
+    @SuppressLint("SimpleDateFormat")
     public void createPostToPlaceImage(Place place, Post post, Uri image) {
-        String dateAndTime = Calendar.getInstance().getTime().toString();
-        UUID uuid = UUID.nameUUIDFromBytes(dateAndTime.getBytes());
+        Date dateAndTime = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String date = simpleDateFormat.format(dateAndTime);
+        UUID uuid = UUID.nameUUIDFromBytes(dateAndTime.toString().getBytes());
 
         final StorageReference ref = mStorage.child("postImages/" + place.getPlaceID());
         UploadTask uploadTask = ref.putFile(image);
@@ -153,7 +138,8 @@ public class PlaceRepo {
                     Uri downloadUri = task.getResult();
                     post.setPostPicture(downloadUri.toString());
                     post.setPostID(uuid.toString());
-                    post.setDateOfCreation(dateAndTime);
+
+                    post.setDateOfCreation(date);
                     placeDAO.createPost(place, post);
                 } else {
                     setCreatePostToPlaceImageResponse("Uploading the image failed. Please try again.");
@@ -162,11 +148,5 @@ public class PlaceRepo {
         });
     }
 
-    public MutableLiveData<ArrayList<Post>> getPostsForPlaceWithPictureResponse() {
-        return postsForPlaceWithPictureResponse;
-    }
 
-    public MutableLiveData<HashMap<Integer, Post>> getPostPictureResponse() {
-        return postPictureResponse;
-    }
 }

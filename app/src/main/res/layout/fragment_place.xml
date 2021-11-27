@@ -234,7 +234,8 @@
             android:id="@+id/rvPost"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+           />
 
 
     </LinearLayout>

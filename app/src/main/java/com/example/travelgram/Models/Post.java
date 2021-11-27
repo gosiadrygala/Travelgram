@@ -13,9 +13,9 @@ public class Post {
     private String username;
     private String userEmail;
     private List<Comment> comments;
+    private List<String> likedByUsers;
 
-    public Post() {
-    }
+    public Post() {}
 
     public Post(String postID, String content, String postPicture, String userPicture, int likeCount,
                 String dateOfCreation,
@@ -29,6 +29,19 @@ public class Post {
         this.username = username;
         this.userEmail = userEmail;
         this.comments = comments;
+    }
+
+    public Post(String postID, String content, String postPicture, String userPicture, int likeCount, String dateOfCreation, String username, String userEmail, List<Comment> comments, List<String> likedByUsers) {
+        this.postID = postID;
+        this.content = content;
+        this.postPicture = postPicture;
+        this.userPicture = userPicture;
+        this.likeCount = likeCount;
+        this.dateOfCreation = dateOfCreation;
+        this.username = username;
+        this.userEmail = userEmail;
+        this.comments = comments;
+        this.likedByUsers = likedByUsers;
     }
 
     public String getPostID() {
@@ -103,6 +116,14 @@ public class Post {
         this.userEmail = userEmail;
     }
 
+    public List<String> getLikedByUsers() {
+        return likedByUsers;
+    }
+
+    public void setLikedByUsers(List<String> likedByUsers) {
+        this.likedByUsers = likedByUsers;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -115,6 +136,7 @@ public class Post {
                 ", username='" + username + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", comments=" + comments +
+                ", likedByUsers=" + likedByUsers +
                 '}';
     }
 }

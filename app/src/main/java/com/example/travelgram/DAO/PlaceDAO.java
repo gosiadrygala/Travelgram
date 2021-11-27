@@ -17,11 +17,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class PlaceDAO {
@@ -193,29 +195,6 @@ public class PlaceDAO {
         }
     }
 
-    public void getPostsForPlace(String placeID) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("posts").child(placeID).limitToFirst(10);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<Post> posts = new ArrayList<>();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    posts.add(ds.getValue(Post.class));
-                }
-                postsForPlaceResponse.setValue(posts);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("PlaceDAO", error.getMessage());
-            }
-        });
-    }
-
-    public MutableLiveData<ArrayList<Post>> getPostsForPlaceResponse() {
-        return postsForPlaceResponse;
-    }
 
     public void followUnfollowPlace(String placeID, String email, boolean followBtnState) {
         email = email.replace(".", ",");
@@ -263,5 +242,42 @@ public class PlaceDAO {
                 Log.d("PlaceDAO", error.getMessage());
             }
         });
+    }
+
+    public void deletePost(String postId, String placeID) {
+        try{
+        database.getReference().child("posts").child(placeID).child(postId).removeValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void likeUnlikeThisPost(String postID, String email, String placeID) {
+        DatabaseReference reference = database.getReference();
+            Query query = reference.child("posts").child(placeID).child(postID).child("likedByUsers");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
+                    List<String> value = snapshot.getValue(t);
+                    if(value == null) {
+                        value = new ArrayList<>();
+                        value.add(email);
+                        reference.child("posts").child(placeID).child(postID).child("likedByUsers").setValue(value);
+                    } else {
+                        for (String val: value) {
+                            if(val.equals(email)) {
+                                value.remove(val);
+                                break;
+                            }
+                        }
+                        reference.child("posts").child(placeID).child(postID).child("likedByUsers").setValue(value);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("PlaceDAO", error.getMessage());
+                }
+            });
     }
 }

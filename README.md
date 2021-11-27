@@ -24,11 +24,11 @@ As a user, I want to be able to add a new place on the map, so I can share it wi
 As a user, I want a separated channel for the place, so that other people can discover it.
 
 As a user, I want the channel to contain the picture of the place, name, short description, weather conditions,
-so that other users can get to know this place. Done to here <--------------
+so that other users can get to know this place.
 
 As a user, I want to be able to follow the place, so I can receive the newest updates from it. 
 
-As a user, I want to be able to add/ delete the post on the channel, so I can also share my experiences from this place. (picture, post content)
+As a user, I want to be able to add/ delete the post on the channel, so I can also share my experiences from this place. (picture, post content) Done to here <--------------
 
 As a user, I want to have an option to like the post, so I can support other users.
 

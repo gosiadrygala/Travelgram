@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.travelgram.API.ServiceGenerator;
@@ -79,14 +80,6 @@ public class PlaceVM extends AndroidViewModel {
         return placeDAO.getPlaceInfoResponse();
     }
 
-    public void getPlacePicture(String placeID) {
-        placeRepo.getPlacePicture(placeID);
-    }
-
-    public MutableLiveData<HashMap<String, byte[]>> getPlacePictureResponse() {
-        return placeRepo.getGetPlacePictureResponse();
-    }
-
     public void createPostToPlace(Place place, String postContent, Uri image, String email) {
         if(place.getPlaceID().equals("") || place.getPlaceID().isEmpty()) {
             setCreatePostToPlaceImageResponse("Something went wrong!");
@@ -106,10 +99,6 @@ public class PlaceVM extends AndroidViewModel {
 
     private void setCreatePostToPlaceImageResponse(String response) {
         placeDAO.setCreatePostToPlaceImageResponse(response);
-    }
-
-    public MutableLiveData<String> getCreatePostToPlaceImageResponse() {
-        return placeDAO.getCreatePostToPlaceImageResponse();
     }
 
     public void requestWeather(double lat, double lon ) {
@@ -158,13 +147,6 @@ public class PlaceVM extends AndroidViewModel {
 
     public MutableLiveData<WeatherResponse> getWeatherResponse() { return weatherResponse; }
 
-    public void getPostsForPlace(String placeID) {
-        placeDAO.getPostsForPlace(placeID);
-    }
-
-    public MutableLiveData<ArrayList<Post>> getPostsForPlaceResponse(){
-        return placeDAO.getPostsForPlaceResponse();
-    }
 
     public void followUnfollowPlace(String placeID, String email, boolean followBtnState) {
         placeDAO.followUnfollowPlace(placeID, email, followBtnState);
@@ -176,5 +158,17 @@ public class PlaceVM extends AndroidViewModel {
 
     public void getFollowState(String placeID, String email) {
         placeDAO.getFollowState(placeID, email);
+    }
+
+    public MutableLiveData<String> getCreatePostToPlaceImageResponse() {
+        return placeDAO.getCreatePostToPlaceImageResponse();
+    }
+
+    public void deletePost(String postId, String placeID) {
+        placeDAO.deletePost(postId, placeID);
+    }
+
+    public void likeUnlikeThisPost(String postID, String email, String placeID) {
+        placeDAO.likeUnlikeThisPost(postID, email, placeID);
     }
 }
