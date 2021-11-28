@@ -1,11 +1,13 @@
 package com.example.travelgram.Views.Fragments;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,6 +37,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Slide;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
+
 import com.example.travelgram.Adapter.PostFirebaseAdapter;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
@@ -328,7 +335,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
     @Override
     public void onListItemClickComment(String postId) {
         Bundle bundle = new Bundle();
-        bundle.putStringArray("placeIDpostID", new String[]{placeID, postId});
+        bundle.putStringArray("userEmailpostID", new String[]{Objects.requireNonNull(signInSignUpVM.getCurrentUser().getValue()).getEmail(), postId});
         Navigation.findNavController(view).navigate(R.id.action_place_to_commentFragment, bundle);
     }
 

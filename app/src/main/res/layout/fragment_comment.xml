@@ -18,16 +18,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
 
         <EditText
             android:id="@+id/commentField"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="10"
             android:ems="10"
-            android:hint="Comment your thought..."
-            android:inputType="textPersonName" />
+            android:padding="10dp"
+            android:hint="Comment your thoughts..."
+            android:background="@drawable/rounded_corners"
+            android:inputType="textPersonName"
+            android:maxLength="100" />
 
         <ImageButton
             android:id="@+id/addCommentButton"
@@ -36,7 +40,8 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_baseline_send_24" />
+            android:src="@drawable/ic_baseline_send_24"
+            app:tint="?colorPrimary" />
     </LinearLayout>
 
 </LinearLayout>

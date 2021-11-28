@@ -1,15 +1,11 @@
 package com.example.travelgram.ViewModels.PlaceVM;
 
 import android.app.Application;
-import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import com.example.travelgram.API.ServiceGenerator;
 import com.example.travelgram.API.WeatherAPI;
 import com.example.travelgram.DAO.PlaceDAO;
@@ -20,15 +16,12 @@ import com.example.travelgram.Repository.PlaceRepo;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.database.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -170,5 +163,27 @@ public class PlaceVM extends AndroidViewModel {
 
     public void likeUnlikeThisPost(String postID, String email, String placeID) {
         placeDAO.likeUnlikeThisPost(postID, email, placeID);
+    }
+
+    public void createComment(String postID, String userEmail, String commentContent) {
+        if(commentContent.length() == 0)
+            getCreateCommentResponse().setValue("Comment cannot be empty.");
+        else placeDAO.createComment(postID, userEmail, commentContent);
+    }
+
+    public MutableLiveData<String> getCreateCommentResponse() {
+        return placeDAO.getCreateCommentResponse();
+    }
+
+    public void getUsernameByEmail(String userEmail) {
+        placeDAO.getUsernameByEmail(userEmail);
+    }
+
+    public MutableLiveData<String> getUsernameResponse() {
+        return placeDAO.getUsernameResponse();
+    }
+
+    public void deleteComment(String postID, String commentID) {
+        placeDAO.deleteComment(postID, commentID);
     }
 }

@@ -1,35 +1,45 @@
 package com.example.travelgram.Models;
 
 public class Comment {
-    private String userID;
-    private String nameOfTheAuthor;
+
+    private String commentID;
+    private String userPictureID;
+    private String username;
     private String dateOfCreation;
     private String content;
-
-    public Comment(String userID, String nameOfTheAuthor, String dateOfCreation, String content) {
-        this.userID = userID;
-        this.nameOfTheAuthor = nameOfTheAuthor;
-        this.dateOfCreation = dateOfCreation;
-        this.content = content;
-    }
 
     public Comment() {
     }
 
-    public String getUserID() {
-        return userID;
+    public Comment(String commentID, String userPictureID, String username, String dateOfCreation, String content) {
+        this.commentID = commentID;
+        this.userPictureID = userPictureID;
+        this.username = username;
+        this.dateOfCreation = dateOfCreation;
+        this.content = content;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public Comment(String userPictureID, String username, String dateOfCreation, String content) {
+        this.userPictureID = userPictureID;
+        this.username = username;
+        this.dateOfCreation = dateOfCreation;
+        this.content = content;
     }
 
-    public String getNameOfTheAuthor() {
-        return nameOfTheAuthor;
+    public String getUserPictureID() {
+        return userPictureID;
     }
 
-    public void setNameOfTheAuthor(String nameOfTheAuthor) {
-        this.nameOfTheAuthor = nameOfTheAuthor;
+    public void setUserPictureID(String userPictureID) {
+        this.userPictureID = userPictureID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getDateOfCreation() {
@@ -48,11 +58,20 @@ public class Comment {
         this.content = content;
     }
 
+    public String getCommentID() {
+        return commentID;
+    }
+
+    public void setCommentID(String commentID) {
+        this.commentID = commentID;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
-                "userID='" + userID + '\'' +
-                ", nameOfTheAuthor='" + nameOfTheAuthor + '\'' +
+                "commentID='" + commentID + '\'' +
+                ", userPictureID='" + userPictureID + '\'' +
+                ", username='" + username + '\'' +
                 ", dateOfCreation='" + dateOfCreation + '\'' +
                 ", content='" + content + '\'' +
                 '}';

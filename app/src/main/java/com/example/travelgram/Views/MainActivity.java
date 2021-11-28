@@ -9,7 +9,6 @@ import android.view.View;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -39,13 +38,22 @@ public class MainActivity extends AppCompatActivity {
 
         checkIfSignedIn();
         toolbar = findViewById(R.id.topAppBar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               signInSignUpVM.signOut();
+        setupNavigation();
+
+        setUpActionOnTopBar();
+    }
+
+    private void setUpActionOnTopBar() {
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            final int id = destination.getId();
+            if (id == R.id.feed || id == R.id.map) {
+                toolbar.setNavigationIcon(R.drawable.ic_logout);
+                toolbar.setNavigationOnClickListener(v -> signInSignUpVM.signOut());
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+                toolbar.setNavigationOnClickListener(v -> onSupportNavigateUp());
             }
         });
-        setupNavigation();
     }
 
     private void checkIfSignedIn() {
@@ -64,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 R.id.map)
                 .build();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-
-
     }
 
     @Override
@@ -77,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
     }
+
 
 
 }

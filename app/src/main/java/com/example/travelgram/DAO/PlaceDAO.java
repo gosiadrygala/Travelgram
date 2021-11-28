@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.travelgram.Models.Comment;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
 import com.example.travelgram.Models.User;
@@ -21,10 +22,14 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class PlaceDAO {
     private final FirebaseDatabase database;
@@ -35,6 +40,8 @@ public class PlaceDAO {
     private MutableLiveData<String> createPostToPlaceImageResponse;
     private MutableLiveData<ArrayList<Post>> postsForPlaceResponse;
     private MutableLiveData<Boolean> followResponse;
+    private MutableLiveData<String> createCommentResponse;
+    private MutableLiveData<String> usernameResponse;
 
     private PlaceDAO() {
         database = FirebaseDatabase.getInstance("https://travelgram-67699-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -44,6 +51,8 @@ public class PlaceDAO {
         createPostToPlaceImageResponse = new MutableLiveData<>();
         postsForPlaceResponse = new MutableLiveData<>();
         followResponse = new MutableLiveData<>();
+        createCommentResponse = new MutableLiveData<>();
+        usernameResponse = new MutableLiveData<>();
     }
 
     public static synchronized PlaceDAO getInstance() {
@@ -279,5 +288,82 @@ public class PlaceDAO {
                     Log.d("PlaceDAO", error.getMessage());
                 }
             });
+    }
+
+    public MutableLiveData<String> getCreateCommentResponse() {
+        return createCommentResponse;
+    }
+
+    public void createComment(String postID, String userEmail, String commentContent) {
+        DatabaseReference reference = database.getReference();
+        Query query = reference.child("users");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = new User();
+
+                for (DataSnapshot dsc: snapshot.getChildren()) {
+                    user = dsc.getValue(User.class);
+                    if(user.getEmail().equals(userEmail))
+                        break;
+                }
+
+                Date dateAndTime = Calendar.getInstance().getTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String dateOfCreation = simpleDateFormat.format(dateAndTime);
+
+                UUID uuid = UUID.nameUUIDFromBytes(dateAndTime.toString().getBytes());
+
+                Comment comment = new Comment(user.getPictureID(), user.getUsername(),
+                        dateOfCreation, commentContent);
+                comment.setCommentID(uuid.toString());
+
+                try {
+                    reference.child("comments").child(postID).child(uuid.toString()).setValue(comment);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("PlaceDAO", error.getMessage());
+            }
+        });
+    }
+
+    public void getUsernameByEmail(String userEmail) {
+        DatabaseReference reference = database.getReference();
+        Query query = reference.child("users");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = new User();
+
+                for (DataSnapshot dsc: snapshot.getChildren()) {
+                    user = dsc.getValue(User.class);
+                    if(user.getEmail().equals(userEmail))
+                        break;
+                }
+
+                usernameResponse.setValue(user.getUsername());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("PlaceDAO", error.getMessage());
+            }
+        });
+
+    }
+
+    public MutableLiveData<String> getUsernameResponse() {
+        return usernameResponse;
+    }
+
+    public void deleteComment(String postID, String commentID) {
+        try{
+            database.getReference().child("comments").child(postID).child(commentID).removeValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

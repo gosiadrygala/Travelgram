@@ -18,9 +18,7 @@
         tools:layout="@layout/fragment_maps" >
         <action
             android:id="@+id/action_map_to_place"
-            app:destination="@id/place"
-            app:enterAnim="@anim/fui_slide_in_right"
-            app:exitAnim="@anim/fui_slide_out_left" />
+            app:destination="@id/place" />
     </fragment>
 
     <fragment
@@ -32,9 +30,7 @@
             app:argType="string[]" />
         <action
             android:id="@+id/action_place_to_map"
-            app:destination="@id/map"
-            app:enterAnim="@anim/fui_slide_out_left"
-            app:exitAnim="@anim/fui_slide_in_right" />
+            app:destination="@id/map" />
         <action
             android:id="@+id/action_place_to_commentFragment"
             app:destination="@id/commentFragment" />
@@ -49,7 +45,7 @@
             android:id="@+id/action_commentFragment_to_place"
             app:destination="@id/place" />
         <argument
-            android:name="placeIDpostID"
+            android:name="userEmailpostID"
             app:argType="string[]" />
     </fragment>
 </navigation>
