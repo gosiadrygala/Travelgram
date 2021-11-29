@@ -3,13 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/feed">
+    app:startDestination="@id/map">
 
     <fragment
         android:id="@+id/feed"
         android:name="com.example.travelgram.Views.Fragments.FeedFragment"
-        android:label="fragment_one"
+        android:label="fragment_feed"
         tools:layout="@layout/fragment_feed" />
+
+    <fragment
+        android:id="@+id/otherProfile"
+        android:name="com.example.travelgram.Views.Fragments.OtherProfileFragment"
+        android:label="fragment_other_profile"
+        tools:layout="@layout/fragment_profile" >
+        <argument
+            android:name="email"
+            app:argType="string"
+            android:defaultValue="No email" />
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_otherProfile_to_search"
+            app:destination="@id/search" />
+        <action
+            android:id="@+id/action_otherProfile_to_place"
+            app:destination="@id/place" />
+        <action
+            android:id="@+id/action_otherProfile_to_commentFragment"
+            app:destination="@id/commentFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/search"
+        android:name="com.example.travelgram.Views.Fragments.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <argument android:name="placeCoordinates"
+            app:argType="string[]" />
+        <action
+            android:id="@+id/action_search_to_place"
+            app:destination="@id/place" />
+        <action
+            android:id="@+id/action_search_to_otherProfile"
+            app:destination="@id/otherProfile" />
+    </fragment>
 
     <fragment
         android:id="@+id/map"
@@ -34,6 +72,12 @@
         <action
             android:id="@+id/action_place_to_commentFragment"
             app:destination="@id/commentFragment" />
+        <action
+            android:id="@+id/action_place_to_search"
+            app:destination="@id/search" />
+        <action
+            android:id="@+id/action_place_to_otherProfile"
+            app:destination="@id/otherProfile" />
     </fragment>
 
     <fragment
@@ -47,5 +91,8 @@
         <argument
             android:name="userEmailpostID"
             app:argType="string[]" />
+        <action
+            android:id="@+id/action_commentFragment_to_otherProfile"
+            app:destination="@id/otherProfile" />
     </fragment>
 </navigation>

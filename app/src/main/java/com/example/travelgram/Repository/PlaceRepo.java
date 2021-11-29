@@ -119,7 +119,7 @@ public class PlaceRepo {
         String date = simpleDateFormat.format(dateAndTime);
         UUID uuid = UUID.nameUUIDFromBytes(dateAndTime.toString().getBytes());
 
-        final StorageReference ref = mStorage.child("postImages/" + place.getPlaceID());
+        final StorageReference ref = mStorage.child("postImages/" + uuid.toString());
         UploadTask uploadTask = ref.putFile(image);
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {

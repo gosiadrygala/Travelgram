@@ -14,9 +14,10 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
 
 public class CommentFirebaseAdapter extends FirebaseRecyclerAdapter<Comment, CommentFirebaseAdapter.ViewHolder> {
-
-    public CommentFirebaseAdapter(@NonNull FirebaseRecyclerOptions<Comment> options) {
+    private final CommentFirebaseAdapter.OnListItemClickListener mOnListItemClickListener;
+    public CommentFirebaseAdapter(@NonNull FirebaseRecyclerOptions<Comment> options, CommentFirebaseAdapter.OnListItemClickListener listener) {
         super(options);
+        mOnListItemClickListener = listener;
     }
 
     @Override
@@ -50,6 +51,12 @@ public class CommentFirebaseAdapter extends FirebaseRecyclerAdapter<Comment, Com
             commentContent = itemView.findViewById(R.id.commentContent);
             commentPictureAuthor = itemView.findViewById(R.id.commentPicture);
             commentID = itemView.findViewById(R.id.commentID);
+
+            commentAuthor.setOnClickListener(r -> mOnListItemClickListener.onListItemClickProfile(commentAuthor.getText().toString()));
         }
+    }
+
+    public interface OnListItemClickListener {
+        void onListItemClickProfile(String username);
     }
 }

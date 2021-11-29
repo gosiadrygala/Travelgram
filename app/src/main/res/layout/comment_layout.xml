@@ -43,6 +43,7 @@
                     android:fontFamily="serif"
                     android:text="TextView"
                     android:textColor="?colorOnSecondary"
+                    android:clickable="true"
                     android:textSize="14sp" />
 
                 <TextView

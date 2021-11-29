@@ -10,7 +10,7 @@
         tools:ignore="HardcodedText" />
 
     <item
-        android:id="@+id/page_2"
+        android:id="@+id/search"
         android:enabled="true"
         android:icon="@drawable/ic_searchicon"
         android:title="Search"
@@ -24,7 +24,7 @@
         tools:ignore="HardcodedText" />
 
     <item
-        android:id="@+id/page_4"
+        android:id="@+id/profile"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_person_24"
         android:title="Profile"

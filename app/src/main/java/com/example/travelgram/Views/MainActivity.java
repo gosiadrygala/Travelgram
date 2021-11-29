@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpActionOnTopBar() {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             final int id = destination.getId();
-            if (id == R.id.feed || id == R.id.map) {
+            if (id == R.id.feed || id == R.id.map || id == R.id.search || id == R.id.profile) {
                 toolbar.setNavigationIcon(R.drawable.ic_logout);
                 toolbar.setNavigationOnClickListener(v -> signInSignUpVM.signOut());
             } else {
@@ -69,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.feed,
-                R.id.map)
+                R.id.map,
+                R.id.search,
+                R.id.profile)
                 .build();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }

@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
             android:layout_marginLeft="10dp"
+            android:clickable="true"
             android:fontFamily="serif"
             android:text="Name of the user" />
 

@@ -176,7 +176,6 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
                 .setQuery(reference.orderByChild("dateOfCreation"), Post.class)
                 .build();
 
-
         // Connecting object of required Adapter class to
         // the Adapter class itself
         postFirebaseAdapter = new PostFirebaseAdapter(options,
@@ -337,6 +336,13 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         Bundle bundle = new Bundle();
         bundle.putStringArray("userEmailpostID", new String[]{Objects.requireNonNull(signInSignUpVM.getCurrentUser().getValue()).getEmail(), postId});
         Navigation.findNavController(view).navigate(R.id.action_place_to_commentFragment, bundle);
+    }
+
+    @Override
+    public void onListItemClickProfile(String userName) {
+        Bundle bundle = new Bundle();
+        bundle.putString("username", userName);
+        Navigation.findNavController(view).navigate(R.id.action_place_to_otherProfile, bundle);
     }
 
 

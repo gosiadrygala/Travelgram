@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class CommentFragment extends Fragment {
+public class CommentFragment extends Fragment implements CommentFirebaseAdapter.OnListItemClickListener {
     private View view;
     private String postID;
     private String userEmail;
@@ -62,7 +63,7 @@ public class CommentFragment extends Fragment {
 
         // Connecting object of required Adapter class to
         // the Adapter class itself
-        commentFirebaseAdapter = new CommentFirebaseAdapter(options);
+        commentFirebaseAdapter = new CommentFirebaseAdapter(options, this);
         // Connecting Adapter class with the Recycler view*/
         recyclerView.setAdapter(commentFirebaseAdapter);
         commentFirebaseAdapter.startListening();
@@ -145,5 +146,12 @@ public class CommentFragment extends Fragment {
 
     private void makeToast(String response) {
         Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onListItemClickProfile(String username) {
+        Bundle bundle = new Bundle();
+        bundle.putString("username", username);
+        Navigation.findNavController(view).navigate(R.id.action_commentFragment_to_otherProfile, bundle);
     }
 }

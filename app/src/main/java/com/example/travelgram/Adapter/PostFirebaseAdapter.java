@@ -14,12 +14,6 @@ import com.example.travelgram.Models.Post;
 import com.example.travelgram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -39,6 +33,7 @@ public class PostFirebaseAdapter extends FirebaseRecyclerAdapter<Post, PostFireb
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Post model) {
+        System.out.println(model.getPostID());
         holder.username.setText(model.getUsername());
 
         holder.postDescription.setText(model.getContent());
@@ -98,6 +93,7 @@ public class PostFirebaseAdapter extends FirebaseRecyclerAdapter<Post, PostFireb
             likePost.setOnClickListener(r -> mOnListItemClickListener.onListItemClickLike(postId.getText().toString()));
             deleteButton.setOnClickListener(this);
             commentPost.setOnClickListener(r -> mOnListItemClickListener.onListItemClickComment(postId.getText().toString()));
+            username.setOnClickListener(r -> mOnListItemClickListener.onListItemClickProfile(username.getText().toString()));
         }
 
         @Override
@@ -111,5 +107,6 @@ public class PostFirebaseAdapter extends FirebaseRecyclerAdapter<Post, PostFireb
         void onListItemClick(String postId);
         void onListItemClickLike(String postId);
         void onListItemClickComment(String postId);
+        void onListItemClickProfile(String userEmail);
     }
 }

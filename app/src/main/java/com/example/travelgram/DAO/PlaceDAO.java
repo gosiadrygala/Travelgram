@@ -235,17 +235,15 @@ public class PlaceDAO {
     public void getFollowState(String placeID, String email) {
         email = email.replace(".", ",");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
-                .child(placeID).child(email);
-
+        Query query = reference.child("follows").child(placeID).child(email);
+        String finalEmail = email;
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getChildrenCount() > 0) {
+                if (snapshot.getValue() != null && snapshot.getValue().toString().equals(finalEmail)) {
                     followResponse.setValue(true);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("PlaceDAO", error.getMessage());
