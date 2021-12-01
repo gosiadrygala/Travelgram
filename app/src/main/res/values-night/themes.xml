@@ -3,15 +3,20 @@
     <attr name="image" format="reference"/>
     <style name="Theme.Travelgram" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimary">@color/anotherMountain</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/sun</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Customize your theme here. -->
 
-        <item name="image">@drawable/microsoftteams_image__1_</item>
+        <item name="image">@drawable/microsoftteams_image</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">?colorOnSecondary</item>
+        <item name="colorControlHighlight">?colorOnPrimary</item>
     </style>
 </resources>

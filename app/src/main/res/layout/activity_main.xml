@@ -23,7 +23,6 @@
             android:theme="@style/ToolbarTheme"
             app:menu="@menu/top_app_bar"
             app:navigationIcon="@drawable/ic_logout"
-            app:navigationIconTint="?colorOnSecondary"
             app:title="@string/Travelgram"
             app:titleCentered="true"
             app:titleTextAppearance="@style/ToolbarTitleText"

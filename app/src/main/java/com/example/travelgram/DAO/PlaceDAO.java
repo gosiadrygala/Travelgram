@@ -191,6 +191,8 @@ public class PlaceDAO {
                     post.setUserPicture(user.getPictureID());
 
                     reference.child("posts").child(place.getPlaceID()).child(post.getPostID()).setValue(post);
+                    String newEmail = user.getEmail().replace(".", ",");
+                    reference.child("usersPosts").child(newEmail).child(post.getPostID()).setValue(post);
                     setCreatePostToPlaceImageResponse("true");
                 }
 

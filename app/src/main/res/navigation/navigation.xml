@@ -22,7 +22,8 @@
             android:defaultValue="No email" />
         <argument
             android:name="username"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue="No username"/>
         <action
             android:id="@+id/action_otherProfile_to_search"
             app:destination="@id/search" />

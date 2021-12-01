@@ -34,13 +34,13 @@ As a user, I want to have an option to like the post, so I can support other use
 
 As a user, I want to be able to comment on the post, so I can share my opinions.
 
-As a user, I want to search for places and other users, so I can discover more. Done to here <--------------
+As a user, I want to search for places and other users, so I can discover more.
+
+As a user, I want to be able to follow other users, so I can see their posts. Done to here <--------------
+
+As a user, I want a profile page, so other travellers can get to know me. (name, short description, follow count, recent posts posted by the user).
 
 As a user, I want to have a news feed, so I can see the posts from channels and people I follow.
-
-As a user, I want a profile page, so other travellers can get to know me. (name, short description, follow count, recent posts posted by the user)
-
-As a user, I want to be able to follow other users, so I can see their posts.
 
 As a user, I want to be able to send and receive private messages, so I can communicate with other travellers. 
 
