@@ -1,13 +1,11 @@
 package com.example.travelgram.Views.Fragments;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
@@ -15,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,10 +34,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.Slide;
-import androidx.transition.Transition;
-import androidx.transition.TransitionManager;
-
 import com.example.travelgram.Adapter.PostFirebaseAdapter;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
@@ -54,16 +47,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-
 import java.util.Objects;
 
-
 public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnListItemClickListener {
+
     private View view;
     private PlaceVM placeVM;
     private PopupWindow popupWindow;
     private Uri image;
-
     private ImageView placeImage;
     private TextView nameOfThePlace;
     private FloatingActionButton followBtn;
@@ -75,12 +66,9 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
     private Button createPostButton;
     private MutableLiveData<Place> currentPlace;
     private SignInSignUpVM signInSignUpVM;
-
     private static final int PICK_FROM_GALLERY = 1;
-
     private RecyclerView postsList;
     private PostFirebaseAdapter postFirebaseAdapter;
-
     private boolean followBtnState;
     private String placeID;
 
@@ -116,6 +104,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
 
         createAPostTextFieldMulti = view.findViewById(R.id.createAPostTextFieldMulti);
 
+        /* Opening a pop up window on touch action on the new post text field */
         createAPostTextFieldMulti.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -136,14 +125,10 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
             }
         });
 
+        /* Request weather conditions */
         placeVM.requestWeather(placeCoordinates1.latitude, placeCoordinates1.longitude);
 
-        placeVM.getWeatherResponse().observe(getViewLifecycleOwner(), new Observer<WeatherResponse>() {
-            @Override
-            public void onChanged(WeatherResponse weather) {
-                populateWeather(weather);
-            }
-        });
+        listenForWeatherResponse();
 
 
         postsList = view.findViewById(R.id.rvPost);
@@ -153,6 +138,14 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         linearLayoutManager.setStackFromEnd(true);
         postsList.setLayoutManager(linearLayoutManager);
 
+        listenForFollowResponse();
+
+        return view;
+    }
+
+    /* Method listens for whether the user follows the place or not and sets the follow button state
+    and follow button image according to the response */
+    private void listenForFollowResponse() {
         placeVM.getFollowResponse().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -165,11 +158,18 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
                 }
             }
         });
-
-        return view;
     }
 
-    private void extracted(String placeID) {
+    private void listenForWeatherResponse() {
+        placeVM.getWeatherResponse().observe(getViewLifecycleOwner(), new Observer<WeatherResponse>() {
+            @Override
+            public void onChanged(WeatherResponse weather) {
+                populateWeather(weather);
+            }
+        });
+    }
+
+    private void settingTheAdapterForRecyclerView(String placeID) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("posts").child(placeID);
         FirebaseRecyclerOptions<Post> options
                 = new FirebaseRecyclerOptions.Builder<Post>()
@@ -214,6 +214,9 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
     }
 
 
+    /* Method used for listening for place info response - sets the fields in the view,
+     * request whether the logged in user follows the place, and sets up the recycler view
+     */
     private void listenForPlaceInfoResponse() {
         placeVM.getPlaceInfoResponse().observe(getViewLifecycleOwner(), new Observer<Place>() {
             @Override
@@ -225,7 +228,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
                 placeID = currentPlace.getValue().getPlaceID();
                 checkFollowBtnState(placeID);
                 listenForFollowButton(placeID);
-                extracted(placeID);
+                settingTheAdapterForRecyclerView(placeID);
             }
         });
     }
@@ -249,6 +252,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         super.onViewCreated(view, savedInstanceState);
     }
 
+    /* Method initializing a pop up window to create a post */
     private void PopUpWindow() {
         View popupView = getLayoutInflater().inflate(R.layout.fragment_share_experience_pop_up_window, null);
 
@@ -271,8 +275,11 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
 
         uploadPicture.setOnClickListener(b -> {
             try {
-                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(requireActivity(),
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PICK_FROM_GALLERY);
                 } else {
                     Intent gallery = new Intent(Intent.ACTION_PICK,
@@ -320,6 +327,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
                     radioButton.setChecked(true);
                 }
             });
+
 
     @Override
     public void onListItemClick(String postId) {

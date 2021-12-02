@@ -3,13 +3,11 @@ package com.example.travelgram.Repository;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.net.Uri;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import com.example.travelgram.DAO.PlaceDAO;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
-import com.example.travelgram.Models.User;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -18,32 +16,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 
+/* Class used for accessing the Firebase storage */
 public class PlaceRepo {
     private static PlaceRepo instance;
     private final Application app;
     private final StorageReference mStorage;
     private final PlaceDAO placeDAO;
-    private MutableLiveData<HashMap<String, byte[]>> getPlacePictureResponse;
-    private MutableLiveData<ArrayList<Post>> postsForPlaceWithPictureResponse;
-
-    private final MutableLiveData<HashMap<Integer, Post>> postPictureResponse;
 
     private PlaceRepo(Application app) {
         this.app = app;
         mStorage = FirebaseStorage.getInstance().getReference();
         placeDAO = PlaceDAO.getInstance();
-        getPlacePictureResponse = new MutableLiveData<>();
-        postsForPlaceWithPictureResponse = new MutableLiveData<>();
-        postPictureResponse = new MutableLiveData<>();
     }
 
     public static synchronized PlaceRepo getInstance(Application app) {
@@ -64,6 +52,7 @@ public class PlaceRepo {
         placeDAO.setCreatePostToPlaceImageResponse(response);
     }
 
+    /* Method used for saving the place image to the firebase storage and creating the place */
     public void createPlaceImage(Place place, Uri image) {
         UUID uuid = UUID.nameUUIDFromBytes(Calendar.getInstance().getTime().toString().getBytes());
         StorageReference riversRef = mStorage.child("placeImages/" + uuid.toString());
@@ -84,6 +73,8 @@ public class PlaceRepo {
         });
     }
 
+    /* Method used for retrieving the url of the place image and for
+    * creating the place using PlaceDAO */
     private void createImageAndPlace(Place place, Uri image) {
         final StorageReference ref = mStorage.child("placeImages/" + place.getPlaceID());
         UploadTask uploadTask = ref.putFile(image);
@@ -111,7 +102,8 @@ public class PlaceRepo {
         });
     }
 
-
+    /* Method used for saving the post image to the firebase storage, getting the url of the image
+    and then saving the data about the post to the database using PlaceDAO*/
     @SuppressLint("SimpleDateFormat")
     public void createPostToPlaceImage(Place place, Post post, Uri image) {
         Date dateAndTime = Calendar.getInstance().getTime();
@@ -147,6 +139,5 @@ public class PlaceRepo {
             }
         });
     }
-
 
 }

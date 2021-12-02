@@ -4,23 +4,19 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.travelgram.Models.Comment;
 import com.example.travelgram.Models.Place;
-import com.example.travelgram.Models.Post;
 import com.example.travelgram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+/* The adapter handles the data collection about posts searched by the user (search item)
+ * taken from the Realtime database and binds it to the view */
 
 public class SearchPlacesFirebaseAdapter extends FirebaseRecyclerAdapter<Place, SearchPlacesFirebaseAdapter.ViewHolder> {
 
@@ -31,6 +27,8 @@ public class SearchPlacesFirebaseAdapter extends FirebaseRecyclerAdapter<Place, 
         mOnListItemClickListener = listener;
     }
 
+
+    /* Method binding data from the data source to each search item */
     @SuppressLint("SetTextI18n")
     @Override
     protected void onBindViewHolder(@NonNull SearchPlacesFirebaseAdapter.ViewHolder holder, int position, @NonNull Place model) {
@@ -47,6 +45,7 @@ public class SearchPlacesFirebaseAdapter extends FirebaseRecyclerAdapter<Place, 
         return new SearchPlacesFirebaseAdapter.ViewHolder(view);
     }
 
+    /* The view holder caching the views associated with each search item */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView searchPicture;
         TextView searchName;
@@ -70,6 +69,7 @@ public class SearchPlacesFirebaseAdapter extends FirebaseRecyclerAdapter<Place, 
 
     }
 
+    /* Interface providing a method for reacting to clicking on the search item */
     public interface OnListItemClickListener {
         void onListItemClick(String ID);
     }

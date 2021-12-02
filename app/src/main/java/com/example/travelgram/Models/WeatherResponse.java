@@ -2,6 +2,7 @@ package com.example.travelgram.Models;
 
 import java.util.ArrayList;
 
+/* Class defining the weather response from the weather API */
 public class WeatherResponse {
     private ArrayList<Weather> weather = new ArrayList<>();
     private Main main;
@@ -18,8 +19,6 @@ public class WeatherResponse {
     public Sys getSys() {
         return sys;
     }
-
-
 
     @Override
     public String toString() {

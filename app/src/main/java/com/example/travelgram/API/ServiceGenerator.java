@@ -3,6 +3,8 @@ package com.example.travelgram.API;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/* The ServiceGenerator class used to create a new REST client with the given API base url */
+
 public class ServiceGenerator {
 
     private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder()

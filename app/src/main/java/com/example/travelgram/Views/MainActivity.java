@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,7 +12,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,13 +30,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
         signInSignUpVM = new ViewModelProvider(this).get(SignInSignUpVM.class);
-
         checkIfSignedIn();
         toolbar = findViewById(R.id.topAppBar);
         setupNavigation();
-
         setUpActionOnTopBar();
     }
 

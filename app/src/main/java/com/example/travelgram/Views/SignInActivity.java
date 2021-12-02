@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +24,15 @@ public class SignInActivity extends AppCompatActivity {
         signInSignUpVM = new ViewModelProvider(this).get(SignInSignUpVM.class);
 
         observerForSignInResponse();
+        checkIfSignedIn();
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null && bundle.containsKey("registerResponse"))
+            Toast.makeText(this, bundle.getString("registerResponse"), Toast.LENGTH_LONG).show();
+    }
+
+    /* Check whether the user is logged in, if yes, the user is redirected to the Main Activity */
+    private void checkIfSignedIn() {
         signInSignUpVM.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
@@ -36,10 +43,6 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null && bundle.containsKey("registerResponse"))
-            Toast.makeText(this, bundle.getString("registerResponse"), Toast.LENGTH_LONG).show();
     }
 
     public void SignUpBtnClick(View view) {
@@ -53,6 +56,7 @@ public class SignInActivity extends AppCompatActivity {
         signInSignUpVM.signIn(email.getText().toString(), password.getText().toString());
     }
 
+    /* Observing the response from teh sign in action */
     private void observerForSignInResponse() {
         signInSignUpVM.getSignInResponse().observe(this, new Observer<String>() {
                     @Override

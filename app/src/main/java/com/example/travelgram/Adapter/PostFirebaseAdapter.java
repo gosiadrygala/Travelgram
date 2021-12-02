@@ -6,17 +6,17 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.travelgram.Models.Post;
 import com.example.travelgram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
+
+/* The adapter handles the data collection about posts
+ * taken from the Realtime database and binds it to the view */
 
 public class PostFirebaseAdapter extends FirebaseRecyclerAdapter<Post, PostFirebaseAdapter.ViewHolder> {
 
@@ -31,6 +31,10 @@ public class PostFirebaseAdapter extends FirebaseRecyclerAdapter<Post, PostFireb
         this.placeID = placeID;
     }
 
+    /* Method binding data from the data source to each post item, additionally checking the username
+    * to see whether the post was created by the logged in user - if not the delete button is gone.
+    * Moreover, the method checks whether the post has been liked by the logged in user and changes the like
+    * button accordingly */
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Post model) {
         System.out.println(model.getPostID());
@@ -67,6 +71,8 @@ public class PostFirebaseAdapter extends FirebaseRecyclerAdapter<Post, PostFireb
         return new PostFirebaseAdapter.ViewHolder(view);
     }
 
+    /* The view holder caching the views associated with each post item and
+    * setting the reaction for click events to particular view items */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView profilePicture;
         TextView username;
@@ -102,7 +108,7 @@ public class PostFirebaseAdapter extends FirebaseRecyclerAdapter<Post, PostFireb
         }
 
     }
-
+    /* Interface providing a method for reacting to click events to particular view items */
     public interface OnListItemClickListener {
         void onListItemClick(String postId);
         void onListItemClickLike(String postId);

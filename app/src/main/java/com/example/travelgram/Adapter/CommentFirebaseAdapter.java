@@ -13,13 +13,18 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
 
+/* The adapter handles the data collection about comments for a specific post
+taken from the Realtime database and binds it to the view */
+
 public class CommentFirebaseAdapter extends FirebaseRecyclerAdapter<Comment, CommentFirebaseAdapter.ViewHolder> {
+
     private final CommentFirebaseAdapter.OnListItemClickListener mOnListItemClickListener;
     public CommentFirebaseAdapter(@NonNull FirebaseRecyclerOptions<Comment> options, CommentFirebaseAdapter.OnListItemClickListener listener) {
         super(options);
         mOnListItemClickListener = listener;
     }
 
+    /* Method binding data from the data source to each comment item */
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Comment model) {
         holder.commentAuthor.setText(model.getUsername());
@@ -37,6 +42,7 @@ public class CommentFirebaseAdapter extends FirebaseRecyclerAdapter<Comment, Com
         return new CommentFirebaseAdapter.ViewHolder(view);
     }
 
+    /* The view holder caching the views associated with each comment item */
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView commentAuthor;
         TextView commentDate;
@@ -55,7 +61,7 @@ public class CommentFirebaseAdapter extends FirebaseRecyclerAdapter<Comment, Com
             commentAuthor.setOnClickListener(r -> mOnListItemClickListener.onListItemClickProfile(commentAuthor.getText().toString()));
         }
     }
-
+    /* Interface providing a method for reacting to clicking on the profile TextView */
     public interface OnListItemClickListener {
         void onListItemClickProfile(String username);
     }

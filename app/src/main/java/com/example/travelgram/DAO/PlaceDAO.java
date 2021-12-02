@@ -1,19 +1,14 @@
 package com.example.travelgram.DAO;
 
-import android.media.Image;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
-
 import com.example.travelgram.Models.Comment;
 import com.example.travelgram.Models.Place;
 import com.example.travelgram.Models.Post;
 import com.example.travelgram.Models.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +25,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+/* A class used for reading, writing, and deleting the data
+from the Realtime database regarding place, comment, post and user object */
+
 public class PlaceDAO {
     private final FirebaseDatabase database;
     private static PlaceDAO instance;
@@ -38,7 +35,6 @@ public class PlaceDAO {
     private MutableLiveData<HashMap<LatLng, String>> markerResponse;
     private MutableLiveData<Place> placeInfoResponse;
     private MutableLiveData<String> createPostToPlaceImageResponse;
-    private MutableLiveData<ArrayList<Post>> postsForPlaceResponse;
     private MutableLiveData<Boolean> followResponse;
     private MutableLiveData<String> createCommentResponse;
     private MutableLiveData<String> usernameResponse;
@@ -49,7 +45,6 @@ public class PlaceDAO {
         markerResponse = new MutableLiveData<>();
         placeInfoResponse = new MutableLiveData<>();
         createPostToPlaceImageResponse = new MutableLiveData<>();
-        postsForPlaceResponse = new MutableLiveData<>();
         followResponse = new MutableLiveData<>();
         createCommentResponse = new MutableLiveData<>();
         usernameResponse = new MutableLiveData<>();
@@ -69,6 +64,7 @@ public class PlaceDAO {
         createPlaceResponse.setValue(response);
     }
 
+    /* Method used for creating the place object in the database */
     public void createPlace(Place place) {
         try {
             database.getReference().child("places").child(place.getPlaceID()).setValue(place); //TODO remove placeID fromm the place object
@@ -88,6 +84,9 @@ public class PlaceDAO {
         return markerResponse;
     }
 
+
+    /* Method used for getting all the places within the specified bounds on the map - sets the
+    markerResponse with all the found markers */
     public void getMarkersInArea(LatLngBounds bounds) {
         HashMap<LatLng, String> markersInArea = new HashMap<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -117,6 +116,7 @@ public class PlaceDAO {
         return placeInfoResponse;
     }
 
+    /* Method used for getting all the data regarding the place with the specified geographical location */
     public void getPlaceInfo(LatLng position) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child("places");
@@ -132,26 +132,6 @@ public class PlaceDAO {
                     if (position.equals(latLng)) {
                         Place value = new Place();
                         value = ds.getValue(Place.class);
-                       /* for (DataSnapshot d: ds.child("posts").getChildren()) {
-                            Post post = new Post();
-                            post.setPostID(d.child("postID").getValue(String.class));
-                            post.setUserID(d.child("userID").getValue(String.class));
-                            post.setLikeCount(0); //TODO do this bs
-                            post.setDateOfCreation(d.child("dateOfCreation").getValue(String.class));
-                            post.setContent(d.child("content").getValue(String.class));
-
-                            if(d.child("comments").exists()); //TODO do this
-
-                            posts.add(post);
-                        }*/
-
-                        //value.setPlaceID(ds.getKey());
-                        //value.setDescription(ds.child("description").getValue(String.class));
-                        //value.setLatitude(ds.child("latitude").getValue(String.class));
-                        //value.setLongitude(ds.child("longitude").getValue(String.class));
-                        //value.setPlaceName(ds.child("placeName").getValue(String.class));
-                        //value.setPosts(posts);
-
                         placeInfoResponse.setValue(value);
                     }
                 }
@@ -172,6 +152,7 @@ public class PlaceDAO {
         return createPostToPlaceImageResponse;
     }
 
+    /* Method used for creating the post on the specified place channel */
     public void createPost(Place place, Post post) {
         try {
             DatabaseReference reference = database.getReference();
@@ -206,7 +187,9 @@ public class PlaceDAO {
         }
     }
 
-
+    /* Method used for performing the follow operation,
+    * if the user already follows the place the email of the user is deleted from the followers of this place,
+    * if user does not follow the email is added to the followers of this place */
     public void followUnfollowPlace(String placeID, String email, boolean followBtnState) {
         email = email.replace(".", ",");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -230,10 +213,9 @@ public class PlaceDAO {
         }
     }
 
-    public MutableLiveData<Boolean> getFollowResponse() {
-        return followResponse;
-    }
 
+    /* Method used for checking whether the logged in user follows
+    the place he/ she is currently visiting*/
     public void getFollowState(String placeID, String email) {
         email = email.replace(".", ",");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -253,6 +235,11 @@ public class PlaceDAO {
         });
     }
 
+    public MutableLiveData<Boolean> getFollowResponse() {
+        return followResponse;
+    }
+
+    /* Method used for deleting the post object from the database */
     public void deletePost(String postId, String placeID) {
         try{
         database.getReference().child("posts").child(placeID).child(postId).removeValue();
@@ -261,6 +248,9 @@ public class PlaceDAO {
         }
     }
 
+    /* Method used for performing the like operation on the post,
+    * if the user already likes the place the email is removed from the likedByUsers list,
+    * if not the email is added */
     public void likeUnlikeThisPost(String postID, String email, String placeID) {
         DatabaseReference reference = database.getReference();
             Query query = reference.child("posts").child(placeID).child(postID).child("likedByUsers");
@@ -290,10 +280,7 @@ public class PlaceDAO {
             });
     }
 
-    public MutableLiveData<String> getCreateCommentResponse() {
-        return createCommentResponse;
-    }
-
+    /* Method used for creating a comment to the post */
     public void createComment(String postID, String userEmail, String commentContent) {
         DatabaseReference reference = database.getReference();
         Query query = reference.child("users");
@@ -331,6 +318,20 @@ public class PlaceDAO {
         });
     }
 
+    public MutableLiveData<String> getCreateCommentResponse() {
+        return createCommentResponse;
+    }
+
+    /* Method used for deleting a comment from the post */
+    public void deleteComment(String postID, String commentID) {
+        try{
+            database.getReference().child("comments").child(postID).child(commentID).removeValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /* Method used for getting the username of the user by the email specified */
     public void getUsernameByEmail(String userEmail) {
         DatabaseReference reference = database.getReference();
         Query query = reference.child("users");
@@ -359,11 +360,5 @@ public class PlaceDAO {
         return usernameResponse;
     }
 
-    public void deleteComment(String postID, String commentID) {
-        try{
-            database.getReference().child("comments").child(postID).child(commentID).removeValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 }

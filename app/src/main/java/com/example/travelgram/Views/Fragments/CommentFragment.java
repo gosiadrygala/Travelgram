@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import com.example.travelgram.Adapter.CommentFirebaseAdapter;
 import com.example.travelgram.Controller.SwipeController;
 import com.example.travelgram.Models.Comment;
@@ -24,7 +23,6 @@ import com.example.travelgram.ViewModels.PlaceVM.PlaceVM;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 
 public class CommentFragment extends Fragment implements CommentFirebaseAdapter.OnListItemClickListener {
     private View view;
@@ -45,7 +43,6 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
         userEmail = userEmailpostID[0];
         postID = userEmailpostID[1];
         placeVM = new ViewModelProvider(requireActivity()).get(PlaceVM.class);
-
     }
 
     private void setUsername(String username) {
@@ -53,7 +50,9 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
     }
 
 
-    private void extracted() {
+    /* Method used to set the Firebase adapter for the comment recycler view
+    * and attaching the swipe controller to enable the delete button for the comment*/
+    private void setAdapterAndSwipeController() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("comments").child(postID);
         FirebaseRecyclerOptions<Comment> options
                 = new FirebaseRecyclerOptions.Builder<Comment>()
@@ -61,10 +60,10 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
                 .build();
 
 
-        // Connecting object of required Adapter class to
-        // the Adapter class itself
+        /* Connecting object of required Adapter class to
+        * the Adapter class itself */
         commentFirebaseAdapter = new CommentFirebaseAdapter(options, this);
-        // Connecting Adapter class with the Recycler view*/
+        /* Connecting Adapter class with the Recycler view */
         recyclerView.setAdapter(commentFirebaseAdapter);
         commentFirebaseAdapter.startListening();
         setupRecyclerView();
@@ -86,6 +85,9 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
             }
         });
     }
+
+    /* Function to tell the app to start getting
+     * data from database on stopping of the activity */
     @Override
     public void onStart() {
         super.onStart();
@@ -93,8 +95,8 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
             commentFirebaseAdapter.startListening();
     }
 
-    // Function to tell the app to stop getting
-    // data from database on stopping of the activity
+    /* Function to tell the app to stop getting
+    * data from database on stopping of the activity */
     @Override public void onStop()
     {
         super.onStop();
@@ -123,16 +125,16 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
 
         placeVM.getUsernameByEmail(userEmail);
 
-        placeVM.getUsernameResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
-                    @Override
-                    public void onChanged(String username) {
-                        setUsername(username);
-                    }
-                }
-        );
+        observingTheUsernameResponse();
 
-        extracted();
+        setAdapterAndSwipeController();
 
+        observingTheCreateCommentResponse();
+
+        return view;
+    }
+
+    private void observingTheCreateCommentResponse() {
         placeVM.getCreateCommentResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
                     @Override
                     public void onChanged(String commentResponse) {
@@ -140,7 +142,16 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
                     }
                 }
         );
-        return view;
+    }
+
+    private void observingTheUsernameResponse() {
+        placeVM.getUsernameResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String username) {
+                        setUsername(username);
+                    }
+                }
+        );
     }
 
 
@@ -148,6 +159,7 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
         Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
     }
 
+    /* Method used for redirecting to the profile of the selected user from the comment */
     @Override
     public void onListItemClickProfile(String username) {
         Bundle bundle = new Bundle();

@@ -6,15 +6,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.travelgram.Models.User;
 import com.example.travelgram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
+
+/* The adapter handles the data collection about users searched by the user (search item)
+ * taken from the Realtime database and binds it to the view */
 
 public class SearchUserFirebaseAdapter extends FirebaseRecyclerAdapter<User, SearchUserFirebaseAdapter.ViewHolder> {
 
@@ -25,6 +26,7 @@ public class SearchUserFirebaseAdapter extends FirebaseRecyclerAdapter<User, Sea
         mOnListItemClickListener = listener;
     }
 
+    /* Method binding data from the data source to each search item */
     @Override
     protected void onBindViewHolder(@NonNull SearchUserFirebaseAdapter.ViewHolder holder, int position, @NonNull User model) {
         Picasso.get().load(model.getPictureID()).into(holder.searchPicture);
@@ -40,6 +42,8 @@ public class SearchUserFirebaseAdapter extends FirebaseRecyclerAdapter<User, Sea
         return new SearchUserFirebaseAdapter.ViewHolder(view);
     }
 
+
+    /* The view holder caching the views associated with each search item */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView searchPicture;
         TextView searchName;
@@ -63,6 +67,7 @@ public class SearchUserFirebaseAdapter extends FirebaseRecyclerAdapter<User, Sea
 
     }
 
+    /* Interface providing a method for reacting to clicking on the search item */
     public interface OnListItemClickListenerUser {
         void onListItemClickUser(String ID);
     }

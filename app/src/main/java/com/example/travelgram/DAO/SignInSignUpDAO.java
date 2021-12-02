@@ -11,6 +11,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+/* A class used for reading and writing the data
+from the Realtime database regarding user object */
+
 public class SignInSignUpDAO {
     private final FirebaseDatabase database;
     private static SignInSignUpDAO instance;

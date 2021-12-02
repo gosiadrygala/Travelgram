@@ -10,36 +10,33 @@ import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.travelgram.R;
 
-import org.w3c.dom.Text;
-
+/* Enum class used to define the delete button state next to the comment */
 enum ButtonsState {
         GONE,
         RIGHT_VISIBLE
         }
 
+/* Class responsible for creating a swipe effect on the comment item, displaying
+the delete button next to it and reacting for click */
+
 public class SwipeController extends ItemTouchHelper.Callback {
 
     private SwipeControllerActions buttonsActions = null;
-
     private boolean swipeBack = false;
-
     private ButtonsState buttonShowedState = ButtonsState.GONE;
-
     private RectF buttonInstance = null;
-
     private RecyclerView.ViewHolder currentItemViewHolder = null;
-
     private static final float buttonWidth = 200;
 
     public SwipeController(SwipeControllerActions buttonsActions) {
         this.buttonsActions = buttonsActions;
     }
+
+    /* Method returning a composite flag which defines the enabled move directions */
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         return makeMovementFlags(0, LEFT);
@@ -55,6 +52,7 @@ public class SwipeController extends ItemTouchHelper.Callback {
 
     }
 
+    /* Method restricting swiping the whole item out of the view */
     @Override
     public int convertToAbsoluteDirection(int flags, int layoutDirection) {
         if (swipeBack) {
@@ -152,6 +150,7 @@ public class SwipeController extends ItemTouchHelper.Callback {
         }
     }
 
+    /* Method used to draw delete button */
     private void drawButtons(Canvas c, RecyclerView.ViewHolder viewHolder) {
         float buttonWidthWithoutPadding = buttonWidth - 20;
         float corners = 16;
@@ -173,6 +172,7 @@ public class SwipeController extends ItemTouchHelper.Callback {
         }
     }
 
+    /* Method used to draw text on the delete button */
     private void drawText(String text, Canvas c, RectF button, Paint p) {
         float textSize = 45;
         p.setColor(Color.RED);

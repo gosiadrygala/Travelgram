@@ -26,6 +26,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/* View model used for handling the request from the views:
+* MapFragment, PlaceFragment, CommentFragment */
 public class PlaceVM extends AndroidViewModel {
 
     private final PlaceRepo placeRepo;
@@ -94,6 +96,8 @@ public class PlaceVM extends AndroidViewModel {
         placeDAO.setCreatePostToPlaceImageResponse(response);
     }
 
+    /* Method to request the current weather condition
+    for a specific place from the weather API */
     public void requestWeather(double lat, double lon ) {
         WeatherAPI weatherAPI = ServiceGenerator.getWeatherAPI();
         Call<WeatherResponse> call = weatherAPI.getWeather(lat, lon);
@@ -127,6 +131,7 @@ public class PlaceVM extends AndroidViewModel {
         });
     }
 
+    /* Method getting and formatting the current date */
     @NonNull
     private String getDate(long time) {
         Calendar calendar = Calendar.getInstance();

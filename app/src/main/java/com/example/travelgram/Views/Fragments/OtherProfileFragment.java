@@ -1,35 +1,20 @@
 package com.example.travelgram.Views.Fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.travelgram.Adapter.PostFirebaseAdapter;
-import com.example.travelgram.DAO.ProfileDAO;
-import com.example.travelgram.Models.Post;
 import com.example.travelgram.Models.User;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.ProfileVM.ProfileVM;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class OtherProfileFragment extends Fragment {
@@ -105,13 +90,25 @@ public class OtherProfileFragment extends Fragment {
         followButtonProfile.setOnClickListener(r -> profileVM.followUnfollowProfile(user.getUsername(),
                 signInSignUpVM.getCurrentUser().getValue().getEmail(), followBtnState));
 
+        observeForUserInfoResponse();
+
+        observerForFollowResponse();
+
+        observingForFollowCountResponse();
+
+        return view;
+    }
+
+    private void observeForUserInfoResponse() {
         profileVM.getUserInfoResponse().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 setUser(user);
             }
         });
+    }
 
+    private void observerForFollowResponse() {
         profileVM.getFollowResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -119,14 +116,14 @@ public class OtherProfileFragment extends Fragment {
                 followButtonProfile.setText(s);
             }
         });
+    }
 
+    private void observingForFollowCountResponse() {
         profileVM.getFollowCountResponse().observe(getViewLifecycleOwner(), new Observer<Long>() {
             @Override
             public void onChanged(Long aLong) {
                 followCount.setText(String.valueOf(aLong));
             }
         });
-
-        return view;
     }
 }

@@ -1,15 +1,14 @@
 package com.example.travelgram.ViewModels.ProfileVM;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-
-import com.example.travelgram.DAO.PlaceDAO;
 import com.example.travelgram.DAO.ProfileDAO;
 import com.example.travelgram.Models.User;
 
+/* View model used for handling the request from the views:
+ * OtherProfileFragment */
 public class ProfileVM extends AndroidViewModel {
     private final ProfileDAO profileDAO;
 

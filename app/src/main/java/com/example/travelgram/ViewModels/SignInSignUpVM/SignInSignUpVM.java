@@ -2,7 +2,6 @@ package com.example.travelgram.ViewModels.SignInSignUpVM;
 
 import android.app.Application;
 import android.net.Uri;
-
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,6 +10,9 @@ import com.example.travelgram.Repository.SignInSignUpRepo;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 
+/* View model used for handling the request from the views:
+ * MainActivity, SignInActivity, SignUpActivity,
+ * PlaceFragment, OtherProfileFragment */
 public class SignInSignUpVM extends AndroidViewModel {
 
     private final SignInSignUpRepo signInSignUpRepo;
