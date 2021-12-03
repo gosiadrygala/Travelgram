@@ -36,7 +36,7 @@ As a user, I want to be able to comment on the post, so I can share my opinions.
 
 As a user, I want to search for places and other users, so I can discover more. ✓
 
-As a user, I want to be able to follow other users, so I can see their posts. ✓ Done to here <--------------
+As a user, I want to be able to follow other users, so I can see their posts. ✓
 
 As a user, I want a profile page, so other travellers can get to know me. (name, short description, follow count, recent posts posted by the user). Half done
 
@@ -47,3 +47,9 @@ As a user, I want to be able to send and receive private messages, so I can comm
 As a user, I want the map to route me to the chosen destination, so that I know where to go. ✕
 
 As a user, I want, forgot the password feature, so that I can retrieve my password. ✕
+
+Reference:
+- https://codeburst.io/android-swipe-menu-with-recyclerview-8f28a235ff28
+
+Youtube video:
+- https://youtu.be/61phzuHsbcs

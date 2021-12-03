@@ -67,7 +67,7 @@ public class PlaceDAO {
     /* Method used for creating the place object in the database */
     public void createPlace(Place place) {
         try {
-            database.getReference().child("places").child(place.getPlaceID()).setValue(place); //TODO remove placeID fromm the place object
+            database.getReference().child("places").child(place.getPlaceID()).setValue(place);
             LatLng latLng = new LatLng(Double.parseDouble(place.getLatitude()), Double.parseDouble(place.getLongitude()));
             database.getReference().child("markers").child(place.getPlaceID()).setValue(latLng);
             createPlaceResponse.setValue("Place created.");
@@ -173,7 +173,6 @@ public class PlaceDAO {
 
                     reference.child("posts").child(place.getPlaceID()).child(post.getPostID()).setValue(post);
                     String newEmail = user.getEmail().replace(".", ",");
-                    reference.child("usersPosts").child(newEmail).child(post.getPostID()).setValue(post);
                     setCreatePostToPlaceImageResponse("true");
                 }
 
@@ -264,11 +263,20 @@ public class PlaceDAO {
                         value.add(email);
                         reference.child("posts").child(placeID).child(postID).child("likedByUsers").setValue(value);
                     } else {
+                        boolean found = false;
+                        String val1 = null;
                         for (String val: value) {
                             if(val.equals(email)) {
-                                value.remove(val);
+                                val1 = val;
+                                found = true;
                                 break;
                             }
+                        }
+                        if(found){
+                            value.remove(val1);
+                        }
+                        else{
+                            value.add(email);
                         }
                         reference.child("posts").child(placeID).child(postID).child("likedByUsers").setValue(value);
                     }
@@ -359,6 +367,4 @@ public class PlaceDAO {
     public MutableLiveData<String> getUsernameResponse() {
         return usernameResponse;
     }
-
-
 }

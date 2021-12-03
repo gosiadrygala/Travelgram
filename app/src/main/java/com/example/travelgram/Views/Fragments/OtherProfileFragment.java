@@ -26,7 +26,7 @@ public class OtherProfileFragment extends Fragment {
     private TextView descriptionProfile;
     private TextView followCount;
     private Button followButtonProfile;
-    private RecyclerView profileRecyclerView; //TODO DELETE?
+    private RecyclerView profileRecyclerView;
     private ProfileVM profileVM;
     private SignInSignUpVM signInSignUpVM;
     private User user;

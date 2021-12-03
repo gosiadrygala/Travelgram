@@ -13,6 +13,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Customize your theme here. -->
         <item name="image">@drawable/microsoftteams_image</item>
+        <item name="android:statusBarColor">@color/black</item>
     </style>
 
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

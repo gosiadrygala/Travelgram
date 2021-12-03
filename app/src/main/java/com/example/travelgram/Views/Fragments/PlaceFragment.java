@@ -72,7 +72,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
     private static final int PICK_FROM_GALLERY = 1;
     private RecyclerView postsList;
     private PostFirebaseAdapter postFirebaseAdapter;
-    private boolean followBtnState;
+    private boolean followBtnState = false;
     private String placeID;
 
     @Override
