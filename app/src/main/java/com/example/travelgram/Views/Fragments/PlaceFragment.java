@@ -49,6 +49,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import java.util.Objects;
 
+/* Class managing the place fragment: request the place info, weather conditions,
+manage adding the post and click events */
+
 public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnListItemClickListener {
 
     private View view;
@@ -114,16 +117,8 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
             }
         });
 
-        placeVM.getCreatePostToPlaceImageResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if (!s.equals("true"))
-                    makeToast(s);
-                else if (s.equals("true"))
-                    if (popupWindow != null)
-                        popupWindow.dismiss();
-            }
-        });
+
+        listenForCreatePostResponse();
 
         /* Request weather conditions */
         placeVM.requestWeather(placeCoordinates1.latitude, placeCoordinates1.longitude);
@@ -143,6 +138,20 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         return view;
     }
 
+    /* Listen for the response weather the post on the place was created or not */
+    private void listenForCreatePostResponse() {
+        placeVM.getCreatePostToPlaceImageResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (!s.equals("true"))
+                    makeToast(s);
+                else if (s.equals("true"))
+                    if (popupWindow != null)
+                        popupWindow.dismiss();
+            }
+        });
+    }
+
     /* Method listens for whether the user follows the place or not and sets the follow button state
     and follow button image according to the response */
     private void listenForFollowResponse() {
@@ -160,6 +169,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         });
     }
 
+    /* Listen for the weather response and populate the weather part of the view */
     private void listenForWeatherResponse() {
         placeVM.getWeatherResponse().observe(getViewLifecycleOwner(), new Observer<WeatherResponse>() {
             @Override
@@ -169,6 +179,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         });
     }
 
+    /* Method used to set the Firebase adapter for post recycler view */
     private void settingTheAdapterForRecyclerView(String placeID) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("posts").child(placeID);
         FirebaseRecyclerOptions<Post> options
@@ -176,16 +187,18 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
                 .setQuery(reference.orderByChild("dateOfCreation"), Post.class)
                 .build();
 
-        // Connecting object of required Adapter class to
-        // the Adapter class itself
+        /* Connecting object of required Adapter class to
+         * the Adapter class itself */
         postFirebaseAdapter = new PostFirebaseAdapter(options,
                 signInSignUpVM.getCurrentUser().getValue().getEmail(),
                 this, placeID);
-        // Connecting Adapter class with the Recycler view*/
+        /* Connecting Adapter class with the Recycler view */
         postsList.setAdapter(postFirebaseAdapter);
         onStart();
     }
 
+    /* Function to tell the app to start getting
+     * data from database */
     @Override
     public void onStart() {
         super.onStart();
@@ -193,14 +206,15 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
             postFirebaseAdapter.startListening();
     }
 
-    // Function to tell the app to stop getting
-    // data from database on stopping of the activity
+    /* Function to tell the app to stop getting
+     * data from database on stopping */
     @Override public void onStop()
     {
         super.onStop();
         postFirebaseAdapter.stopListening();
     }
 
+    /* Check if the logged in user follows the place - called from listenForPlaceInfoResponse() */
     private void checkFollowBtnState(String placeID) {
         placeVM.getFollowState(placeID,
                 signInSignUpVM.getCurrentUser().getValue().getEmail());
@@ -233,6 +247,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         });
     }
 
+    /* Populate the weather fields by getting data from weather response */
     @SuppressLint("SetTextI18n")
     private void populateWeather(WeatherResponse weatherResponse) {
         TextView weather = (TextView) view.findViewById(R.id.weather);
@@ -329,16 +344,19 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
             });
 
 
+    /* Delete post */
     @Override
     public void onListItemClick(String postId) {
         placeVM.deletePost(postId, placeID);
     }
 
+    /* Like/ Unlike post */
     @Override
     public void onListItemClickLike(String postId) {
         placeVM.likeUnlikeThisPost(postId, Objects.requireNonNull(signInSignUpVM.getCurrentUser().getValue()).getEmail(), placeID);
     }
 
+    /* Redirect to the comment fragment of the particular post */
     @Override
     public void onListItemClickComment(String postId) {
         Bundle bundle = new Bundle();
@@ -346,6 +364,7 @@ public class PlaceFragment extends Fragment implements PostFirebaseAdapter.OnLis
         Navigation.findNavController(view).navigate(R.id.action_place_to_commentFragment, bundle);
     }
 
+    /* Redirect to the user profile - clicked on the post author  */
     @Override
     public void onListItemClickProfile(String userName) {
         Bundle bundle = new Bundle();

@@ -17,6 +17,8 @@ import com.example.travelgram.ViewModels.ProfileVM.ProfileVM;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 import com.squareup.picasso.Picasso;
 
+/* Class managing the profile fragment */
+
 public class OtherProfileFragment extends Fragment {
     private View view;
     private ImageView profilePicture;
@@ -24,8 +26,7 @@ public class OtherProfileFragment extends Fragment {
     private TextView descriptionProfile;
     private TextView followCount;
     private Button followButtonProfile;
-    private RecyclerView profileRecyclerView;
-
+    private RecyclerView profileRecyclerView; //TODO DELETE?
     private ProfileVM profileVM;
     private SignInSignUpVM signInSignUpVM;
     private User user;
@@ -38,6 +39,9 @@ public class OtherProfileFragment extends Fragment {
         profileVM = new ViewModelProvider(getActivity()).get(ProfileVM.class);
         signInSignUpVM = new ViewModelProvider(getActivity()).get(SignInSignUpVM.class);
 
+        /* Check whether the user is redirecting from the search action or
+        by accessing this fragment from the bottom navigation, and based on that
+         request user info for this specific profile */
         String email = requireArguments().getString("email");
 
         String username = null;
@@ -53,22 +57,6 @@ public class OtherProfileFragment extends Fragment {
         else profileVM.getUserInfo(email);
     }
 
-    public void setUser(User user) {
-        this.user = user;
-
-        profileVM.getFollowCount(user.getUsername());
-
-        profileVM.getFollowState(user.getUsername(),
-                signInSignUpVM.getCurrentUser().getValue().getEmail());
-
-        Picasso.get().load(user.getPictureID()).into(profilePicture);
-        usernameProfile.setText(user.getUsername());
-        descriptionProfile.setText(user.getShortDescription());
-        followCount.setText("0");
-        if (user.getEmail().equals(signInSignUpVM.getCurrentUser().getValue().getEmail())){
-            followButtonProfile.setVisibility(View.GONE);
-        } else followButtonProfile.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +75,7 @@ public class OtherProfileFragment extends Fragment {
 
         followBtnState = followButtonProfile.getText().toString();
 
+        /* Observe the follow button */
         followButtonProfile.setOnClickListener(r -> profileVM.followUnfollowProfile(user.getUsername(),
                 signInSignUpVM.getCurrentUser().getValue().getEmail(), followBtnState));
 
@@ -99,6 +88,7 @@ public class OtherProfileFragment extends Fragment {
         return view;
     }
 
+    /* Set the user after getting the user info response */
     private void observeForUserInfoResponse() {
         profileVM.getUserInfoResponse().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
@@ -108,6 +98,27 @@ public class OtherProfileFragment extends Fragment {
         });
     }
 
+    /* Method used for setting up the profile of the user */
+    public void setUser(User user) {
+        this.user = user;
+
+        profileVM.getFollowCount(user.getUsername());
+
+        profileVM.getFollowState(user.getUsername(),
+                signInSignUpVM.getCurrentUser().getValue().getEmail());
+
+        Picasso.get().load(user.getPictureID()).into(profilePicture);
+        usernameProfile.setText(user.getUsername());
+        descriptionProfile.setText(user.getShortDescription());
+        followCount.setText("0");
+
+        /* If the user visits its own profile, make the follow button gone, otherwise visible */
+        if (user.getEmail().equals(signInSignUpVM.getCurrentUser().getValue().getEmail())){
+            followButtonProfile.setVisibility(View.GONE);
+        } else followButtonProfile.setVisibility(View.VISIBLE);
+    }
+
+    /* Observe the follow response, sets the button accordingly to the response follow/ unfollow */
     private void observerForFollowResponse() {
         profileVM.getFollowResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -118,6 +129,7 @@ public class OtherProfileFragment extends Fragment {
         });
     }
 
+    /* Setting the number of followers */
     private void observingForFollowCountResponse() {
         profileVM.getFollowCountResponse().observe(getViewLifecycleOwner(), new Observer<Long>() {
             @Override

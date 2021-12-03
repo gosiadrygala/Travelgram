@@ -24,6 +24,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/* Class managing the comment fragment: displaying comments, adding and deleting comments */
+
 public class CommentFragment extends Fragment implements CommentFirebaseAdapter.OnListItemClickListener {
     private View view;
     private String postID;
@@ -45,13 +47,8 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
         placeVM = new ViewModelProvider(requireActivity()).get(PlaceVM.class);
     }
 
-    private void setUsername(String username) {
-        this.username = username;
-    }
-
-
     /* Method used to set the Firebase adapter for the comment recycler view
-    * and attaching the swipe controller to enable the delete button for the comment*/
+    * and attaching the swipe controller to enable the delete button for the comment */
     private void setAdapterAndSwipeController() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("comments").child(postID);
         FirebaseRecyclerOptions<Comment> options
@@ -77,6 +74,7 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
         itemTouchhelper.attachToRecyclerView(recyclerView);
     }
 
+    /* Method used for adding the delete buttons to each item from the view - comment item */
     private void setupRecyclerView() {
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -87,7 +85,7 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
     }
 
     /* Function to tell the app to start getting
-     * data from database on stopping of the activity */
+     * data from database */
     @Override
     public void onStart() {
         super.onStart();
@@ -96,7 +94,7 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
     }
 
     /* Function to tell the app to stop getting
-    * data from database on stopping of the activity */
+    * data from database on stopping */
     @Override public void onStop()
     {
         super.onStop();
@@ -123,6 +121,8 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
         recyclerView.setLayoutManager(linearLayoutManager);
         createCommentBtn.setOnClickListener(this::createComment);
 
+        /* This method is called to get a username to then further pass the username to the adapter
+        so that the delete button is only enabled for the owner of the comment */
         placeVM.getUsernameByEmail(userEmail);
 
         observingTheUsernameResponse();
@@ -154,6 +154,9 @@ public class CommentFragment extends Fragment implements CommentFirebaseAdapter.
         );
     }
 
+    private void setUsername(String username) {
+        this.username = username;
+    }
 
     private void makeToast(String response) {
         Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();

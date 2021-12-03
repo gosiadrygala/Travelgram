@@ -41,6 +41,8 @@ public class PlaceVM extends AndroidViewModel {
         weatherResponse = new MutableLiveData<>();
     }
 
+    /* Method used for directing the request to
+   create a place to PlaceRepo + validating the fields */
     public void createPlace(Place place, Uri image) {
         if(place.getPlaceName().equals("") || place.getDescription().equals(""))
             setCreatePlaceResponse("Name of the place or description of the place is empty.");
@@ -75,6 +77,8 @@ public class PlaceVM extends AndroidViewModel {
         return placeDAO.getPlaceInfoResponse();
     }
 
+    /* Method used for directing the request to
+    create a post to PlaceRepo + validating the fields */
     public void createPostToPlace(Place place, String postContent, Uri image, String email) {
         if(place.getPlaceID().equals("") || place.getPlaceID().isEmpty()) {
             setCreatePostToPlaceImageResponse("Something went wrong!");

@@ -43,6 +43,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+/* Class managing the comment fragment: displaying map with markers,
+displaying the pop up window to create place */
+
 public class MapsFragment extends Fragment {
     private View view;
     private PlaceVM placeVM;
@@ -69,7 +72,6 @@ public class MapsFragment extends Fragment {
                                 googleMap.getUiSettings().setMyLocationButtonEnabled(true);
                             } else if (coarseLocationGranted != null && coarseLocationGranted) ;
                             else {
-                                // No location access granted.
                             }
                         }
                 );
@@ -85,6 +87,7 @@ public class MapsFragment extends Fragment {
                     LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
                     if (camera.zoom != currentZoom) {
                         currentZoom = camera.zoom;
+                        /* Request all markers within specified bounds on the map */
                         placeVM.getMarkersInArea(bounds);
                     }
                 }
@@ -92,14 +95,21 @@ public class MapsFragment extends Fragment {
 
             listenForMarkerResponse(googleMap);
 
+            /* When the window above the marker is clicked, redirect to the specified place channel */
             googleMap.setOnInfoWindowClickListener(p -> {
                 LatLng position = p.getPosition();
                 Bundle bundle = new Bundle();
-                bundle.putStringArray("placeCoordinates", new String[]{String.valueOf(position.latitude), String.valueOf(position.longitude)});
+                bundle.putStringArray("placeCoordinates", new String[]{String.valueOf(position.latitude),
+                        String.valueOf(position.longitude)});
                 Navigation.findNavController(view).navigate(R.id.action_map_to_place, bundle);
             });
 
+            /* Setting map style to the one specified in the json file */
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.styles_json));
+
+            /* Check if the permission for the location is enabled,
+             * if yes, mark the location on the map, and enable the my location button,
+             * if not request permission */
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 googleMap.setMyLocationEnabled(true);
                 googleMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -109,8 +119,11 @@ public class MapsFragment extends Fragment {
                         Manifest.permission.ACCESS_COARSE_LOCATION
                 });
             }
+            /* Enable components on the map */
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             googleMap.getUiSettings().setMapToolbarEnabled(true);
+
+            /* Opening a create place pop window on the long click on the map */
             googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                 @Override
                 public void onMapLongClick(LatLng latLng) {
@@ -133,6 +146,7 @@ public class MapsFragment extends Fragment {
         });
     }
 
+    /* Pop up window used for creating a place */
     @SuppressLint("ResourceAsColor")
     private void PopUpWindow(LatLng latLng) {
         View popupView = getLayoutInflater().inflate(R.layout.fragment_pop_up_window, null);
@@ -172,6 +186,7 @@ public class MapsFragment extends Fragment {
         popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
     }
 
+    /* Method used to request the creation of the place from VM */
     private void createPlace(LatLng latLng) {
         Place place = new Place(nameOfThePlaceField.getText().toString(),
                 descriptionField.getText().toString(),
@@ -180,6 +195,7 @@ public class MapsFragment extends Fragment {
         placeVM.createPlace(place, image);
     }
 
+    /* Request permission to access the gallery when upload picture icon is clicked */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -216,6 +232,16 @@ public class MapsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         placeVM = new ViewModelProvider(getActivity()).get(PlaceVM.class);
+        observingTheCreatePlaceResponse();
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(callback);
+        }
+    }
+
+    /* Method observing the create place response, place created successfully - dismiss window, failed - make toast */
+    private void observingTheCreatePlaceResponse() {
         placeVM.getCreatePlaceResponse().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -225,11 +251,6 @@ public class MapsFragment extends Fragment {
                 } else makeToast(s);
             }
         });
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
-        }
     }
 
     private void makeToast(String response) {

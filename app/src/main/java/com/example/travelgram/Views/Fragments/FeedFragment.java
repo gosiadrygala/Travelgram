@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import com.example.travelgram.R;
 
+//TODO Idk maybe delete this? what do you think Karlo?
 public class FeedFragment extends Fragment {
 
     @Override

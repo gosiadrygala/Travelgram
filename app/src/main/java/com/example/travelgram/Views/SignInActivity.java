@@ -12,6 +12,7 @@ import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 import com.google.firebase.auth.FirebaseUser;
 
+/* Class managing the sign in activity */
 public class SignInActivity extends AppCompatActivity {
 
     private SignInSignUpVM signInSignUpVM;
@@ -56,7 +57,7 @@ public class SignInActivity extends AppCompatActivity {
         signInSignUpVM.signIn(email.getText().toString(), password.getText().toString());
     }
 
-    /* Observing the response from teh sign in action */
+    /* Observing the response from the sign in action */
     private void observerForSignInResponse() {
         signInSignUpVM.getSignInResponse().observe(this, new Observer<String>() {
                     @Override

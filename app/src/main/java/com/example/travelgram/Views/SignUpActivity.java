@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.travelgram.R;
 import com.example.travelgram.ViewModels.SignInSignUpVM.SignInSignUpVM;
 
+/* Class managing the sign up activity: creating a user profile */
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText username, email, password, shortDesc;
@@ -39,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         imageButton = findViewById(R.id.uploadPictureSignUp);
         radioButton = findViewById(R.id.radioButtonSingUp);
+        /* Check permission on image button clicked */
         imageButton.setOnClickListener(b -> {
             try {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -137,6 +139,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
+    /* After request for accessing the gallery to upload picture, check and perform corresponding actions */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -154,6 +157,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+    /* After picking the picture from gallery, get the data */
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getData() != null) {

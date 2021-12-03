@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+/* Class managing the search fragment: initializing tabs,
+populating two recycler views (places, users), redirecting to the chosen search item */
 
 public class SearchFragment extends Fragment implements SearchPlacesFirebaseAdapter.OnListItemClickListener, SearchUserFirebaseAdapter.OnListItemClickListenerUser {
     private View view;
@@ -91,9 +93,7 @@ public class SearchFragment extends Fragment implements SearchPlacesFirebaseAdap
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                System.out.println(s.length());
                 searchInFirebase(s.toString(), s.length());
-
             }
 
             @Override
@@ -105,6 +105,7 @@ public class SearchFragment extends Fragment implements SearchPlacesFirebaseAdap
         return view;
     }
 
+    /* Method populating the particular tab with the search results */
     private void searchInFirebase(String searchText, int length) {
         if(currentTab.equals("Places")){
             if(length != 0){
@@ -136,6 +137,7 @@ public class SearchFragment extends Fragment implements SearchPlacesFirebaseAdap
         }
     }
 
+    /* When the place search item is clicked redirect to the place fragment */
     @Override
     public void onListItemClick(String ID) {
         String[] result = ID.split(",");
@@ -144,6 +146,7 @@ public class SearchFragment extends Fragment implements SearchPlacesFirebaseAdap
         Navigation.findNavController(view).navigate(R.id.action_search_to_place, bundle);
     }
 
+    /* When the user search item is clicked redirect to the other profile fragment */
     @Override
     public void onListItemClickUser(String ID) {
         Bundle bundle = new Bundle();
